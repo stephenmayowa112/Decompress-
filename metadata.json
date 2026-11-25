@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Decompress",
+  "description": "Discover social experiences, book venues with indicative Budget Ranges, and arrange event-planning and coordination support across Lagos.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

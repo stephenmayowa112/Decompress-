@@ -1,0 +1,18 @@
+version: "3.9"
+
+# Decompress V1 — Local Development Compose Specification
+# Note: In the AI Studio cloud sandbox, the Next.js full-stack server runs natively on port 3000
+# backed by provisioned Firebase Firestore & Auth. This compose file supports local containerised runs.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.example
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    restart: unless-stopped

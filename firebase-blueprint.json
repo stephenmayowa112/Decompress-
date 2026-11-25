@@ -1,0 +1,258 @@
+{
+  "entities": {
+    "UserPublic": {
+      "title": "UserPublic",
+      "description": "Public profile metadata for a registered Decompress user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 120 },
+        "accountType": { "type": "string", "enum": ["personal", "corporate"] },
+        "companyName": { "type": "string", "maxLength": 160 }
+      },
+      "required": ["uid", "name", "accountType"]
+    },
+    "UserPrivate": {
+      "title": "UserPrivate",
+      "description": "Private PII and notification preferences for a registered Decompress user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "googleLinked": { "type": "boolean" },
+        "emailVerified": { "type": "boolean" },
+        "promotionalEmailsOptIn": { "type": "boolean" }
+      },
+      "required": ["uid", "email", "googleLinked", "emailVerified"]
+    },
+    "AdminMember": {
+      "title": "AdminMember",
+      "description": "Staff role membership document for Decompress admin dashboard.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "staffGroup": { "type": "string", "enum": ["Operations", "Finance", "Content & Support", "Superuser"] }
+      },
+      "required": ["uid", "email", "staffGroup"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "One of the 7 Decompress venue categories.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 100 },
+        "slug": { "type": "string", "maxLength": 100, "pattern": "^[a-z0-9\\-]+$" },
+        "description": { "type": "string", "maxLength": 500 },
+        "iconName": { "type": "string", "maxLength": 50 },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "name", "slug", "description", "order"]
+    },
+    "Location": {
+      "title": "Location",
+      "description": "City, area, and neighbourhood for venue discovery.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "city": { "type": "string", "maxLength": 80 },
+        "area": { "type": "string", "maxLength": 80 },
+        "neighbourhood": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["id", "city", "area", "neighbourhood"]
+    },
+    "Facility": {
+      "title": "Facility",
+      "description": "Venue facility linked to the category slugs it applies to.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 80 },
+        "slug": { "type": "string", "maxLength": 80, "pattern": "^[a-z0-9\\-]+$" },
+        "applicableCategorySlugs": { "type": "array" }
+      },
+      "required": ["id", "name", "slug", "applicableCategorySlugs"]
+    },
+    "ExperienceTag": {
+      "title": "ExperienceTag",
+      "description": "Activity or experience tag such as salsa, karaoke, or live band.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 80 },
+        "slug": { "type": "string", "maxLength": 80, "pattern": "^[a-z0-9\\-]+$" },
+        "categorySlugs": { "type": "array" }
+      },
+      "required": ["id", "name", "slug", "categorySlugs"]
+    },
+    "Venue": {
+      "title": "Venue",
+      "description": "Social experience venue listing with indicative Budget Range and facilities.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 160 },
+        "slug": { "type": "string", "maxLength": 160, "pattern": "^[a-z0-9\\-]+$" },
+        "description": { "type": "string", "maxLength": 3000 },
+        "address": { "type": "string", "maxLength": 300 },
+        "locationId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "city": { "type": "string", "maxLength": 80 },
+        "area": { "type": "string", "maxLength": 80 },
+        "neighbourhood": { "type": "string", "maxLength": 100 },
+        "setting": { "type": "string", "enum": ["indoor", "outdoor", "rooftop", "beachfront"] },
+        "capacity": { "type": "number" },
+        "openingHours": { "type": "string", "maxLength": 300 },
+        "budgetMinMinor": { "type": "number" },
+        "budgetMaxMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "budgetBasis": { "type": "string", "enum": ["per_person", "per_table", "total"] },
+        "categorySlugs": { "type": "array" },
+        "experienceTags": { "type": "array" },
+        "facilitySlugs": { "type": "array" },
+        "occasions": { "type": "array" },
+        "bookingTypes": { "type": "array" },
+        "heroImageUrl": { "type": "string", "maxLength": 500 },
+        "galleryImages": { "type": "array" },
+        "confirmedOfferText": { "type": "string", "maxLength": 400 },
+        "ratingAverage": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "isFeatured": { "type": "boolean" },
+        "isPublished": { "type": "boolean" }
+      },
+      "required": [
+        "id",
+        "name",
+        "slug",
+        "description",
+        "address",
+        "locationId",
+        "setting",
+        "capacity",
+        "budgetMinMinor",
+        "budgetMaxMinor",
+        "currency",
+        "budgetBasis",
+        "isFeatured",
+        "isPublished"
+      ]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global configurable settings and feature flags (TODO(founder)).",
+      "type": "object",
+      "properties": {
+        "supportEmail": { "type": "string", "maxLength": 160 },
+        "supportPhone": { "type": "string", "maxLength": 60 },
+        "supportHours": { "type": "string", "maxLength": 160 },
+        "guestPaymentMode": { "type": "string", "enum": ["guest_checkout", "wallet_only"] },
+        "walletEnabled": { "type": "boolean" },
+        "defaultCurrency": { "type": "string", "maxLength": 10 },
+        "defaultTimezone": { "type": "string", "maxLength": 64 }
+      },
+      "required": [
+        "supportEmail",
+        "supportPhone",
+        "supportHours",
+        "guestPaymentMode",
+        "walletEnabled",
+        "defaultCurrency",
+        "defaultTimezone"
+      ]
+    },
+    "FAQTopic": {
+      "title": "FAQTopic",
+      "description": "Topic section grouping FAQ items.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "maxLength": 120 },
+        "slug": { "type": "string", "maxLength": 120, "pattern": "^[a-z0-9\\-]+$" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title", "slug", "order"]
+    },
+    "FAQItem": {
+      "title": "FAQItem",
+      "description": "Frequently asked question and answer managed by admins without a deploy.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "topicId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "topicSlug": { "type": "string", "maxLength": 120 },
+        "question": { "type": "string", "maxLength": 300 },
+        "answer": { "type": "string", "maxLength": 2500 },
+        "order": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "requiresPolicyConfirmation": { "type": "boolean" }
+      },
+      "required": ["id", "topicId", "question", "answer", "order", "isPublished"]
+    },
+    "AddOn": {
+      "title": "AddOn",
+      "description": "Optional event planning and coordination add-on.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "type": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 500 },
+        "fixedPriceMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "isOptionalFixedPrice": { "type": "boolean" }
+      },
+      "required": ["id", "type", "name", "description", "currency", "isOptionalFixedPrice"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPublic" },
+      "description": "Public user account metadata."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivate" },
+      "description": "Isolated PII and notification preferences for user account."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminMember" },
+      "description": "Trusted staff/admin membership records."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Decompress venue categories."
+    },
+    "/locations/{locationId}": {
+      "schema": { "$ref": "#/entities/Location" },
+      "description": "Lagos discovery locations (city, area, neighbourhood)."
+    },
+    "/facilities/{facilityId}": {
+      "schema": { "$ref": "#/entities/Facility" },
+      "description": "Venue facilities mapped to applicable categories."
+    },
+    "/experienceTags/{tagId}": {
+      "schema": { "$ref": "#/entities/ExperienceTag" },
+      "description": "Venue activity and experience tags."
+    },
+    "/venues/{venueId}": {
+      "schema": { "$ref": "#/entities/Venue" },
+      "description": "Published and draft venue profiles."
+    },
+    "/siteSettings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global site settings and TO CONFIRM feature toggles."
+    },
+    "/faqTopics/{topicId}": {
+      "schema": { "$ref": "#/entities/FAQTopic" },
+      "description": "FAQ topic groupings."
+    },
+    "/faqItems/{itemId}": {
+      "schema": { "$ref": "#/entities/FAQItem" },
+      "description": "FAQ entries (published and unpublished drafts)."
+    },
+    "/addOns/{addOnId}": {
+      "schema": { "$ref": "#/entities/AddOn" },
+      "description": "Optional event add-ons."
+    }
+  }
+}

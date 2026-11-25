@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@theme {
+  /* Core Decompress Brand Palette (Section 4) */
+  --color-brand-navy: #123B60;
+  --color-brand-navy-hover: #0D2C49;
+  --color-brand-navy-light: #1B4F7E;
+
+  --color-brand-teal: #13A6A3;
+  /* Derived darker teal reaching >= 4.5:1 contrast on #F5F8FA (5.68:1) */
+  --color-brand-teal-text: #0B6E6C;
+
+  --color-brand-coral: #FF704F;
+  /* Derived darker coral for hover and pressed states */
+  --color-brand-coral-hover: #E55A38;
+  --color-brand-coral-active: #CC4A2B;
+  /* Derived accessible warm accent text on light backgrounds (never use raw coral as body text) */
+  --color-brand-coral-text: #B8371A;
+
+  --color-brand-yellow: #FFC857;
+  --color-brand-yellow-text: #7A5400;
+
+  --color-surface: #F5F8FA;
+  --color-surface-teal: #E7F5F3;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-brand-navy);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-brand-navy);
+    text-wrap: balance;
+  }
+}

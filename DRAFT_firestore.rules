@@ -1,0 +1,381 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (Default-Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Hardened Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isBootstrappedSuperuser() {
+      return isSignedIn() && request.auth.token.email == 'stephenmayowa112@gmail.com';
+    }
+
+    function isAdmin() {
+      return isBootstrappedSuperuser() || (
+        isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isSuperuser() {
+      return isBootstrappedSuperuser() || (
+        isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.staffGroup == 'Superuser'
+      );
+    }
+
+    // 3. Validation Blueprints
+    function isValidUserPublic(data, userId) {
+      return data.keys().hasAll(['uid', 'name', 'accountType']) &&
+        data.keys().hasOnly(['uid', 'name', 'accountType', 'companyName']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.uid == userId &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.accountType is string && (data.accountType == 'personal' || data.accountType == 'corporate') &&
+        (!('companyName' in data) || (data.companyName is string && data.companyName.size() <= 160));
+    }
+
+    function isValidUserPrivate(data, userId) {
+      return data.keys().hasAll(['uid', 'email', 'googleLinked', 'emailVerified']) &&
+        data.keys().hasOnly(['uid', 'email', 'phone', 'googleLinked', 'emailVerified', 'promotionalEmailsOptIn']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.uid == userId &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 160 &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 40)) &&
+        data.googleLinked is bool &&
+        data.emailVerified is bool &&
+        (!('promotionalEmailsOptIn' in data) || data.promotionalEmailsOptIn is bool);
+    }
+
+    function isValidAdminMember(data, adminId) {
+      return data.keys().hasAll(['uid', 'email', 'staffGroup']) &&
+        data.keys().hasOnly(['uid', 'email', 'staffGroup']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.uid == adminId &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 160 &&
+        data.staffGroup is string && (
+          data.staffGroup == 'Operations' ||
+          data.staffGroup == 'Finance' ||
+          data.staffGroup == 'Content & Support' ||
+          data.staffGroup == 'Superuser'
+        );
+    }
+
+    function isValidCategory(data, categoryId) {
+      return data.keys().hasAll(['id', 'name', 'slug', 'description', 'order']) &&
+        data.keys().hasOnly(['id', 'name', 'slug', 'description', 'iconName', 'order']) &&
+        data.id is string && data.id == categoryId && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+        data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 100 && data.slug.matches('^[a-z0-9\\-]+$') &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 500 &&
+        (!('iconName' in data) || (data.iconName is string && data.iconName.size() <= 50)) &&
+        data.order is number;
+    }
+
+    function isValidLocation(data, locationId) {
+      return data.keys().hasAll(['id', 'city', 'area', 'neighbourhood']) &&
+        data.keys().hasOnly(['id', 'city', 'area', 'neighbourhood']) &&
+        data.id is string && data.id == locationId && data.id.size() <= 128 &&
+        data.city is string && data.city.size() >= 1 && data.city.size() <= 80 &&
+        data.area is string && data.area.size() >= 1 && data.area.size() <= 80 &&
+        data.neighbourhood is string && data.neighbourhood.size() >= 1 && data.neighbourhood.size() <= 100;
+    }
+
+    function isValidFacility(data, facilityId) {
+      return data.keys().hasAll(['id', 'name', 'slug', 'applicableCategorySlugs']) &&
+        data.keys().hasOnly(['id', 'name', 'slug', 'applicableCategorySlugs']) &&
+        data.id is string && data.id == facilityId && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 80 && data.slug.matches('^[a-z0-9\\-]+$') &&
+        data.applicableCategorySlugs is list && data.applicableCategorySlugs.size() >= 1 && data.applicableCategorySlugs.size() <= 10 &&
+        data.applicableCategorySlugs[0] is string && data.applicableCategorySlugs[0].size() <= 100;
+    }
+
+    function isValidExperienceTag(data, tagId) {
+      return data.keys().hasAll(['id', 'name', 'slug', 'categorySlugs']) &&
+        data.keys().hasOnly(['id', 'name', 'slug', 'categorySlugs']) &&
+        data.id is string && data.id == tagId && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 80 && data.slug.matches('^[a-z0-9\\-]+$') &&
+        data.categorySlugs is list && data.categorySlugs.size() >= 1 && data.categorySlugs.size() <= 10 &&
+        data.categorySlugs[0] is string && data.categorySlugs[0].size() <= 100;
+    }
+
+    function isValidVenue(data, venueId) {
+      return data.keys().hasAll([
+          'id', 'name', 'slug', 'description', 'address', 'locationId',
+          'setting', 'capacity', 'budgetMinMinor', 'budgetMaxMinor',
+          'currency', 'budgetBasis', 'isFeatured', 'isPublished'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'name', 'slug', 'description', 'address', 'locationId',
+          'city', 'area', 'neighbourhood', 'setting', 'capacity', 'openingHours',
+          'budgetMinMinor', 'budgetMaxMinor', 'currency', 'budgetBasis',
+          'categorySlugs', 'experienceTags', 'facilitySlugs', 'occasions',
+          'bookingTypes', 'heroImageUrl', 'galleryImages', 'confirmedOfferText',
+          'ratingAverage', 'reviewCount', 'isFeatured', 'isPublished'
+        ]) &&
+        data.id is string && data.id == venueId && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 160 &&
+        data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 160 && data.slug.matches('^[a-z0-9\\-]+$') &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 3000 &&
+        data.address is string && data.address.size() >= 1 && data.address.size() <= 300 &&
+        data.locationId is string && data.locationId.size() >= 1 && data.locationId.size() <= 128 &&
+        (!('city' in data) || (data.city is string && data.city.size() <= 80)) &&
+        (!('area' in data) || (data.area is string && data.area.size() <= 80)) &&
+        (!('neighbourhood' in data) || (data.neighbourhood is string && data.neighbourhood.size() <= 100)) &&
+        data.setting is string && (
+          data.setting == 'indoor' || data.setting == 'outdoor' ||
+          data.setting == 'rooftop' || data.setting == 'beachfront'
+        ) &&
+        data.capacity is number && data.capacity >= 1 && data.capacity <= 50000 &&
+        (!('openingHours' in data) || (data.openingHours is string && data.openingHours.size() <= 300)) &&
+        data.budgetMinMinor is number && data.budgetMinMinor >= 0 &&
+        data.budgetMaxMinor is number && data.budgetMaxMinor >= data.budgetMinMinor &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.budgetBasis is string && (
+          data.budgetBasis == 'per_person' || data.budgetBasis == 'per_table' || data.budgetBasis == 'total'
+        ) &&
+        (!('categorySlugs' in data) || (data.categorySlugs is list && data.categorySlugs.size() <= 7 && (data.categorySlugs.size() == 0 || (data.categorySlugs[0] is string && data.categorySlugs[0].size() <= 100)))) &&
+        (!('experienceTags' in data) || (data.experienceTags is list && data.experienceTags.size() <= 20 && (data.experienceTags.size() == 0 || (data.experienceTags[0] is string && data.experienceTags[0].size() <= 80)))) &&
+        (!('facilitySlugs' in data) || (data.facilitySlugs is list && data.facilitySlugs.size() <= 20 && (data.facilitySlugs.size() == 0 || (data.facilitySlugs[0] is string && data.facilitySlugs[0].size() <= 80)))) &&
+        (!('occasions' in data) || (data.occasions is list && data.occasions.size() <= 15 && (data.occasions.size() == 0 || (data.occasions[0] is string && data.occasions[0].size() <= 80)))) &&
+        (!('bookingTypes' in data) || (data.bookingTypes is list && data.bookingTypes.size() <= 5 && (data.bookingTypes.size() == 0 || (data.bookingTypes[0] is string && data.bookingTypes[0].size() <= 50)))) &&
+        (!('heroImageUrl' in data) || (data.heroImageUrl is string && data.heroImageUrl.size() <= 500)) &&
+        (!('galleryImages' in data) || (data.galleryImages is list && data.galleryImages.size() <= 10 && (data.galleryImages.size() == 0 || (data.galleryImages[0] is string && data.galleryImages[0].size() <= 500)))) &&
+        (!('confirmedOfferText' in data) || (data.confirmedOfferText is string && data.confirmedOfferText.size() <= 400)) &&
+        (!('ratingAverage' in data) || (data.ratingAverage is number && data.ratingAverage >= 0 && data.ratingAverage <= 5)) &&
+        (!('reviewCount' in data) || (data.reviewCount is number && data.reviewCount >= 0)) &&
+        data.isFeatured is bool &&
+        data.isPublished is bool;
+    }
+
+    function isValidSiteSettings(data) {
+      return data.keys().hasAll([
+          'supportEmail', 'supportPhone', 'supportHours',
+          'guestPaymentMode', 'walletEnabled', 'defaultCurrency', 'defaultTimezone'
+        ]) &&
+        data.keys().hasOnly([
+          'supportEmail', 'supportPhone', 'supportHours',
+          'guestPaymentMode', 'walletEnabled', 'defaultCurrency', 'defaultTimezone'
+        ]) &&
+        data.supportEmail is string && data.supportEmail.size() >= 3 && data.supportEmail.size() <= 160 &&
+        data.supportPhone is string && data.supportPhone.size() >= 3 && data.supportPhone.size() <= 60 &&
+        data.supportHours is string && data.supportHours.size() >= 3 && data.supportHours.size() <= 160 &&
+        data.guestPaymentMode is string && (data.guestPaymentMode == 'guest_checkout' || data.guestPaymentMode == 'wallet_only') &&
+        data.walletEnabled is bool &&
+        data.defaultCurrency is string && data.defaultCurrency.size() >= 3 && data.defaultCurrency.size() <= 10 &&
+        data.defaultTimezone is string && data.defaultTimezone.size() >= 2 && data.defaultTimezone.size() <= 64;
+    }
+
+    function isValidFAQTopic(data, topicId) {
+      return data.keys().hasAll(['id', 'title', 'slug', 'order']) &&
+        data.keys().hasOnly(['id', 'title', 'slug', 'order']) &&
+        data.id is string && data.id == topicId && data.id.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 120 &&
+        data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 120 && data.slug.matches('^[a-z0-9\\-]+$') &&
+        data.order is number;
+    }
+
+    function isValidFAQItem(data, itemId) {
+      return data.keys().hasAll(['id', 'topicId', 'question', 'answer', 'order', 'isPublished']) &&
+        data.keys().hasOnly(['id', 'topicId', 'topicSlug', 'question', 'answer', 'order', 'isPublished', 'requiresPolicyConfirmation']) &&
+        data.id is string && data.id == itemId && data.id.size() <= 128 &&
+        data.topicId is string && data.topicId.size() >= 1 && data.topicId.size() <= 128 &&
+        (!('topicSlug' in data) || (data.topicSlug is string && data.topicSlug.size() <= 120)) &&
+        data.question is string && data.question.size() >= 1 && data.question.size() <= 300 &&
+        data.answer is string && data.answer.size() >= 1 && data.answer.size() <= 2500 &&
+        data.order is number &&
+        data.isPublished is bool &&
+        (!('requiresPolicyConfirmation' in data) || data.requiresPolicyConfirmation is bool);
+    }
+
+    function isValidAddOn(data, addOnId) {
+      return data.keys().hasAll(['id', 'type', 'name', 'description', 'currency', 'isOptionalFixedPrice']) &&
+        data.keys().hasOnly(['id', 'type', 'name', 'description', 'fixedPriceMinor', 'currency', 'isOptionalFixedPrice']) &&
+        data.id is string && data.id == addOnId && data.id.size() <= 128 &&
+        data.type is string && data.type.size() >= 1 && data.type.size() <= 100 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 500 &&
+        (!('fixedPriceMinor' in data) || (data.fixedPriceMinor is number && data.fixedPriceMinor >= 0)) &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.isOptionalFixedPrice is bool;
+    }
+
+    // 4. Collection Match Blocks
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isBootstrappedSuperuser() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isValidId(userId) && isOwner(userId) && isValidUserPublic(incoming(), userId);
+      allow update: if isValidId(userId) && isValidUserPublic(incoming(), userId) && (
+        isAdmin() || (
+          isOwner(userId) &&
+          incoming().uid == existing().uid &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'accountType', 'companyName'])
+        )
+      );
+      allow delete: if isValidId(userId) && isSuperuser();
+
+      match /private/{docId} {
+        allow get: if isValidId(userId) && isValidId(docId) && (isOwner(userId) || isAdmin()) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow list: if isValidId(userId) && (isOwner(userId) || isBootstrappedSuperuser());
+        allow create: if isValidId(userId) && isValidId(docId) && docId == 'info' &&
+          isOwner(userId) &&
+          isValidUserPrivate(incoming(), userId) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow update: if isValidId(userId) && isValidId(docId) && docId == 'info' &&
+          isValidUserPrivate(incoming(), userId) &&
+          exists(/databases/$(database)/documents/users/$(userId)) && (
+            isAdmin() || (
+              isOwner(userId) &&
+              incoming().uid == existing().uid &&
+              incoming().email == existing().email &&
+              incoming().diff(existing()).affectedKeys().hasOnly(['phone', 'promotionalEmailsOptIn', 'googleLinked', 'emailVerified'])
+            )
+          );
+        allow delete: if isValidId(userId) && isValidId(docId) && isSuperuser();
+      }
+    }
+
+    match /admins/{adminId} {
+      allow get: if isValidId(adminId) && (isOwner(adminId) || isAdmin());
+      allow list: if isBootstrappedSuperuser() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isValidId(adminId) && isSuperuser() && isValidAdminMember(incoming(), adminId);
+      allow update: if isValidId(adminId) && isValidAdminMember(incoming(), adminId) &&
+        isSuperuser() &&
+        incoming().uid == existing().uid &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['email', 'staffGroup']);
+      allow delete: if isValidId(adminId) && isSuperuser();
+    }
+
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId);
+      allow list: if resource.data.order >= 0;
+      allow create: if isValidId(categoryId) && isAdmin() && isValidCategory(incoming(), categoryId);
+      allow update: if isValidId(categoryId) && isValidCategory(incoming(), categoryId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'slug', 'description', 'iconName', 'order']);
+      allow delete: if isValidId(categoryId) && isSuperuser();
+    }
+
+    match /locations/{locationId} {
+      allow get: if isValidId(locationId);
+      allow list: if resource.data.city is string;
+      allow create: if isValidId(locationId) && isAdmin() && isValidLocation(incoming(), locationId);
+      allow update: if isValidId(locationId) && isValidLocation(incoming(), locationId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['city', 'area', 'neighbourhood']);
+      allow delete: if isValidId(locationId) && isSuperuser();
+    }
+
+    match /facilities/{facilityId} {
+      allow get: if isValidId(facilityId);
+      allow list: if resource.data.name is string;
+      allow create: if isValidId(facilityId) && isAdmin() && isValidFacility(incoming(), facilityId);
+      allow update: if isValidId(facilityId) && isValidFacility(incoming(), facilityId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'slug', 'applicableCategorySlugs']);
+      allow delete: if isValidId(facilityId) && isSuperuser();
+    }
+
+    match /experienceTags/{tagId} {
+      allow get: if isValidId(tagId);
+      allow list: if resource.data.name is string;
+      allow create: if isValidId(tagId) && isAdmin() && isValidExperienceTag(incoming(), tagId);
+      allow update: if isValidId(tagId) && isValidExperienceTag(incoming(), tagId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'slug', 'categorySlugs']);
+      allow delete: if isValidId(tagId) && isSuperuser();
+    }
+
+    match /venues/{venueId} {
+      allow get: if isValidId(venueId) && (existing().isPublished == true || isAdmin());
+      allow list: if resource.data.isPublished == true || isBootstrappedSuperuser();
+      allow create: if isValidId(venueId) && isAdmin() && isValidVenue(incoming(), venueId) &&
+        exists(/databases/$(database)/documents/locations/$(incoming().locationId));
+      allow update: if isValidId(venueId) && isValidVenue(incoming(), venueId) && isAdmin() &&
+        incoming().id == existing().id &&
+        exists(/databases/$(database)/documents/locations/$(incoming().locationId)) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'slug', 'description', 'address', 'locationId',
+          'city', 'area', 'neighbourhood', 'setting', 'capacity', 'openingHours',
+          'budgetMinMinor', 'budgetMaxMinor', 'currency', 'budgetBasis',
+          'categorySlugs', 'experienceTags', 'facilitySlugs', 'occasions',
+          'bookingTypes', 'heroImageUrl', 'galleryImages', 'confirmedOfferText',
+          'ratingAverage', 'reviewCount', 'isFeatured', 'isPublished'
+        ]);
+      allow delete: if isValidId(venueId) && isSuperuser();
+    }
+
+    match /siteSettings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if resource.data.defaultCurrency is string;
+      allow create: if isValidId(settingId) && isAdmin() && isValidSiteSettings(incoming());
+      allow update: if isValidId(settingId) && isValidSiteSettings(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'supportEmail', 'supportPhone', 'supportHours',
+          'guestPaymentMode', 'walletEnabled', 'defaultCurrency', 'defaultTimezone'
+        ]);
+      allow delete: if isValidId(settingId) && isSuperuser();
+    }
+
+    match /faqTopics/{topicId} {
+      allow get: if isValidId(topicId);
+      allow list: if resource.data.order >= 0;
+      allow create: if isValidId(topicId) && isAdmin() && isValidFAQTopic(incoming(), topicId);
+      allow update: if isValidId(topicId) && isValidFAQTopic(incoming(), topicId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'slug', 'order']);
+      allow delete: if isValidId(topicId) && isSuperuser();
+    }
+
+    match /faqItems/{itemId} {
+      allow get: if isValidId(itemId) && (existing().isPublished == true || isAdmin());
+      allow list: if resource.data.isPublished == true || isBootstrappedSuperuser();
+      allow create: if isValidId(itemId) && isAdmin() && isValidFAQItem(incoming(), itemId) &&
+        exists(/databases/$(database)/documents/faqTopics/$(incoming().topicId));
+      allow update: if isValidId(itemId) && isValidFAQItem(incoming(), itemId) && isAdmin() &&
+        incoming().id == existing().id &&
+        exists(/databases/$(database)/documents/faqTopics/$(incoming().topicId)) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'topicId', 'topicSlug', 'question', 'answer', 'order', 'isPublished', 'requiresPolicyConfirmation'
+        ]);
+      allow delete: if isValidId(itemId) && isSuperuser();
+    }
+
+    match /addOns/{addOnId} {
+      allow get: if isValidId(addOnId);
+      allow list: if resource.data.currency is string;
+      allow create: if isValidId(addOnId) && isAdmin() && isValidAddOn(incoming(), addOnId);
+      allow update: if isValidId(addOnId) && isValidAddOn(incoming(), addOnId) && isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'type', 'name', 'description', 'fixedPriceMinor', 'currency', 'isOptionalFixedPrice'
+        ]);
+      allow delete: if isValidId(addOnId) && isSuperuser();
+    }
+  }
+}
