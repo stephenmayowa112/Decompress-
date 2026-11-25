@@ -15,30 +15,30 @@ const NAV_LINKS = [
 ];
 
 /**
- * Deep Navy (#123B60) Top Navigation Bar
- * Strictly enforces the 3-Zone Top Bar Contract on desktop and keeps mobile sticky height
- * compact (64px) with a slide-down drawer for touch-friendly navigation.
+ * Airy Minimal Top Navigation Bar inspired by the minimal redesign template,
+ * grounded in Decompress Soft White (#F5F8FA), Deep Navy (#123B60) wordmark/links,
+ * Vibrant Teal (#13A6A3) interactive highlights, and Coral (#FF704F) primary CTA.
  */
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-brand-navy text-white border-b border-brand-navy-light">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 md:gap-8 px-4 sm:px-6 lg:px-8 h-16">
-        {/* Zone 1: Single text element wordmark */}
+    <header className="sticky top-0 z-40 w-full bg-surface/90 backdrop-blur-md border-b border-brand-navy/8">
+      <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-4 md:gap-8 px-4 sm:px-6 lg:px-8 h-16 sm:h-[74px]">
+        {/* Zone 1: Single clean Deep Navy wordmark */}
         <Link
           href="/"
           onClick={() => setMobileMenuOpen(false)}
-          className="text-xl font-bold tracking-tight text-white whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
+          className="text-xl sm:text-[22px] font-bold tracking-[-0.025em] text-brand-navy whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
         >
           Decompress
         </Link>
 
-        {/* Zone 2: 5 single-line text navigation links (Desktop & Tablet >= md) */}
+        {/* Zone 2: 5 clean single-line navigation links */}
         <nav
           aria-label="Primary Navigation"
-          className="hidden md:flex items-center gap-6 lg:gap-7 text-sm font-medium text-surface-teal"
+          className="hidden md:flex items-center gap-6 lg:gap-7 text-sm font-medium text-brand-navy/75"
         >
           {NAV_LINKS.map((link) => {
             const isActive =
@@ -48,8 +48,9 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'py-1 transition-colors whitespace-nowrap shrink-0 hover:text-white hover:underline underline-offset-8 decoration-brand-teal decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded',
-                  isActive && 'text-white underline'
+                  'py-1.5 transition-colors whitespace-nowrap shrink-0 hover:text-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded',
+                  isActive &&
+                    'text-brand-navy font-semibold underline underline-offset-8 decoration-brand-teal decoration-2'
                 )}
               >
                 {link.label}
@@ -58,11 +59,11 @@ export function Header() {
           })}
         </nav>
 
-        {/* Zone 3: 1 primary action on desktop; accessible drawer trigger on mobile */}
+        {/* Zone 3: Single primary Coral CTA + mobile drawer button */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/experiences"
-            className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl shadow-[0_6px_18px_rgba(255,112,79,0.22)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,112,79,0.3)] transition-all duration-200 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
           >
             Explore Experiences
           </Link>
@@ -73,7 +74,7 @@ export function Header() {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-drawer"
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="inline-flex md:hidden items-center justify-center h-11 w-11 rounded-xl text-white hover:bg-brand-navy-light transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal cursor-pointer"
+            className="inline-flex md:hidden items-center justify-center h-11 w-11 rounded-2xl text-brand-navy hover:bg-surface-teal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal cursor-pointer"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -85,7 +86,7 @@ export function Header() {
         <nav
           id="mobile-nav-drawer"
           aria-label="Mobile Navigation"
-          className="md:hidden border-t border-brand-navy-light bg-brand-navy px-4 py-4 space-y-2"
+          className="md:hidden border-t border-brand-navy/10 bg-white px-4 py-4 space-y-1.5 shadow-[0_16px_32px_rgba(18,59,96,0.08)]"
         >
           {NAV_LINKS.map((link) => {
             const isActive =
@@ -96,19 +97,19 @@ export function Header() {
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  'flex items-center min-h-[44px] px-3 rounded-xl text-base font-medium text-surface-teal hover:bg-brand-navy-light hover:text-white transition-colors',
-                  isActive && 'bg-brand-navy-light text-white font-semibold'
+                  'flex items-center min-h-[44px] px-3.5 rounded-2xl text-base font-medium text-brand-navy/80 hover:bg-surface-teal hover:text-brand-navy transition-colors',
+                  isActive && 'bg-surface-teal text-brand-navy font-semibold'
                 )}
               >
                 {link.label}
               </Link>
             );
           })}
-          <div className="pt-2">
+          <div className="pt-2.5">
             <Link
               href="/experiences"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center min-h-[48px] px-4 py-3 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl transition-colors"
+              className="flex w-full items-center justify-center min-h-[50px] px-4 py-3 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl shadow-[0_6px_18px_rgba(255,112,79,0.22)] transition-colors"
             >
               Explore Experiences
             </Link>

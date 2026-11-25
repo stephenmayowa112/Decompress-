@@ -66,10 +66,10 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
     : `/book/${venue.slug}`;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6 sm:space-y-8">
+    <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="text-xs sm:text-sm text-brand-navy/70">
-        <Link href="/venues" className="hover:underline text-brand-teal-text font-medium">
+      <nav aria-label="Breadcrumb" className="text-xs sm:text-sm text-brand-navy/65">
+        <Link href="/venues" className="hover:underline text-brand-teal-text font-semibold">
           Venues
         </Link>{' '}
         <span aria-hidden="true">·</span> <span className="text-brand-navy">{venue.name}</span>
@@ -78,11 +78,11 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
       {/* Responsive CSS Grid:
           Mobile (< lg): Hero & Header -> Sticky/Summary Budget Range & Book Now Card -> Details & Reviews
           Desktop (lg+): 2/3 Left Column (Hero, Header, Details) + 1/3 Right Sticky Sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
         {/* Block 1 (Col 1 on lg): Gallery & Venue Header */}
-        <div className="lg:col-span-2 lg:col-start-1 space-y-5 min-w-0">
+        <div className="lg:col-span-2 lg:col-start-1 space-y-6 min-w-0">
           <div className="space-y-3">
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-2xl bg-brand-navy border border-brand-navy/10">
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-[28px] bg-brand-navy shadow-[0_18px_44px_rgba(18,59,96,0.12)]">
               {!imgError && activePhotoUrl ? (
                 <Image
                   src={activePhotoUrl}
@@ -163,7 +163,7 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
         </div>
 
         {/* Block 2 (Appears right below Header on mobile, spans sticky right sidebar on lg+): Budget Range & Booking CTA */}
-        <aside className="lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24 rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-5">
+        <aside className="lg:col-span-1 lg:col-start-3 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24 rounded-[28px] bg-white p-6 sm:p-7 border border-brand-navy/8 shadow-[0_14px_40px_rgba(18,59,96,0.08)] space-y-5">
           <div className="space-y-1">
             <span className="text-xs font-medium text-brand-navy/65">Indicative Budget Range</span>
             <p className="text-xl sm:text-2xl font-bold text-brand-navy tabular-nums">
@@ -291,13 +291,13 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
           )}
 
           {/* Additional Decompress Services (Service Levels & Optional Add-Ons) */}
-          <section className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-5">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-semibold text-brand-teal-text">
+          <section className="rounded-[28px] bg-surface-teal p-6 sm:p-8 space-y-5">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.08em] uppercase text-brand-teal-text">
                 <Sparkles className="h-4 w-4 text-brand-teal shrink-0" />
                 <span>Concierge Coordination</span>
               </div>
-              <h2 className="text-lg sm:text-xl font-bold text-brand-navy">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-brand-navy">
                 Additional Decompress Services for This Booking
               </h2>
               <p className="text-sm text-brand-navy/75">
@@ -306,11 +306,11 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {SEED_EVENT_SERVICE_LEVELS.map((level) => (
                 <div
                   key={level.id}
-                  className="rounded-xl bg-surface p-4 border border-brand-navy/10 space-y-1"
+                  className="rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(18,59,96,0.04)] space-y-1.5"
                 >
                   <h3 className="text-sm font-bold text-brand-navy">{level.name}</h3>
                   <p className="text-xs text-brand-navy/75 leading-relaxed">{level.description}</p>
@@ -319,17 +319,17 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
             </div>
 
             {addOns.length > 0 && (
-              <div className="space-y-2 pt-2 border-t border-brand-navy/10">
+              <div className="space-y-2.5 pt-3 border-t border-brand-navy/10">
                 <h3 className="text-sm font-bold text-brand-navy">Optional Event Add-Ons</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                   {addOns.map((addon) => (
                     <div
                       key={addon.id}
-                      className="flex items-baseline justify-between gap-2 rounded-xl bg-surface px-3.5 py-2.5 border border-brand-navy/10"
+                      className="flex items-baseline justify-between gap-2 rounded-2xl bg-white px-4 py-3 shadow-[0_2px_10px_rgba(18,59,96,0.04)]"
                     >
                       <span className="font-semibold text-brand-navy">{addon.name}</span>
                       {addon.fixedPriceMinor && (
-                        <span className="font-medium text-brand-teal-text tabular-nums shrink-0">
+                        <span className="font-semibold text-brand-teal-text tabular-nums shrink-0">
                           {formatMoneyMinor(addon.fixedPriceMinor, addon.currency)}
                         </span>
                       )}
@@ -342,7 +342,7 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
 
           {/* Ratings & Verified Reviews (hidden if no rating/reviews - Section 7.2) */}
           {(venue.ratingAverage > 0 || venue.reviewCount > 0 || venueReviews.length > 0) && (
-            <section className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-4">
+            <section className="rounded-[28px] bg-white p-6 sm:p-7 border border-brand-navy/8 shadow-[0_8px_28px_rgba(18,59,96,0.05)] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <h2 className="text-lg sm:text-xl font-bold text-brand-navy">
                   Verified Guest Reviews

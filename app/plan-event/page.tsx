@@ -91,22 +91,22 @@ export default function PlanEventPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-10">
-      <div className="space-y-3 max-w-3xl">
-        <p className="text-xs font-semibold text-brand-teal-text">
+    <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
+      <div className="space-y-3 max-w-2xl">
+        <p className="text-xs font-semibold tracking-[0.12em] uppercase text-brand-teal-text">
           Event Planning &amp; Coordination
         </p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-brand-navy leading-tight">
-          Let Decompress coordinate the event while you enjoy the occasion.
+        <h1 className="text-3xl sm:text-[44px] font-bold tracking-[-0.03em] leading-[1.1] text-brand-navy">
+          Let Decompress coordinate while you enjoy the occasion.
         </h1>
-        <p className="text-base text-brand-navy/80 leading-relaxed">
+        <p className="text-base text-brand-navy/75 leading-relaxed">
           Choose from three structured service levels and four optional creative and coordination
           add-ons. Our team reviews every brief and sends a tailored quote directly to your inbox.
         </p>
       </div>
 
-      {/* 3 Service Levels (Interactive Selector Cards) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* 3 Service Levels (Interactive Minimal Cards) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {SEED_EVENT_SERVICE_LEVELS.map((level, idx) => {
           const isSelected = serviceLevel === level.id;
           return (
@@ -115,26 +115,44 @@ export default function PlanEventPage() {
               type="button"
               onClick={() => setServiceLevel(level.id)}
               aria-pressed={isSelected}
-              className={`text-left rounded-2xl p-6 border transition-all cursor-pointer space-y-2.5 ${
+              className={`text-left rounded-[28px] p-7 sm:p-8 transition-all duration-300 ease-out cursor-pointer space-y-3 hover:-translate-y-1 ${
                 isSelected
-                  ? 'bg-surface-teal border-brand-teal ring-2 ring-brand-teal/25'
-                  : 'bg-white border-brand-navy/15 hover:border-brand-teal/60'
+                  ? 'bg-brand-navy text-white shadow-[0_20px_44px_rgba(18,59,96,0.18)]'
+                  : 'bg-surface-teal text-brand-navy hover:shadow-[0_18px_36px_rgba(18,59,96,0.08)]'
               }`}
             >
-              <span className="text-xs font-bold text-brand-teal-text">
-                0{idx + 1}. {isSelected ? 'Selected Level' : 'Service Level'}
+              <span
+                className={`text-xs font-bold tracking-[0.06em] uppercase ${
+                  isSelected ? 'text-brand-yellow' : 'text-brand-teal-text'
+                }`}
+              >
+                0{idx + 1} · {isSelected ? 'Selected' : 'Service Level'}
               </span>
-              <h2 className="text-lg font-bold text-brand-navy">{level.name}</h2>
-              <p className="text-sm text-brand-navy/80 leading-relaxed">{level.description}</p>
+              <h2
+                className={`text-xl font-bold tracking-[-0.015em] ${
+                  isSelected ? 'text-white' : 'text-brand-navy'
+                }`}
+              >
+                {level.name}
+              </h2>
+              <p
+                className={`text-sm leading-relaxed ${
+                  isSelected ? 'text-surface-teal/85' : 'text-brand-navy/75'
+                }`}
+              >
+                {level.description}
+              </p>
             </button>
           );
         })}
       </div>
 
       {/* 4 Optional Add-Ons */}
-      <div className="rounded-2xl bg-surface-teal p-6 sm:p-8 border border-brand-teal/25 space-y-5">
-        <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-navy">Optional Event Add-Ons</h2>
+      <div className="rounded-[28px] bg-surface-teal p-7 sm:p-9 space-y-6">
+        <div className="space-y-1.5">
+          <h2 className="text-2xl font-bold tracking-[-0.02em] text-brand-navy">
+            Optional Event Add-Ons
+          </h2>
           <p className="text-sm text-brand-navy/75">
             Select any optional add-ons below to include them in your quotation brief.
           </p>
@@ -145,10 +163,10 @@ export default function PlanEventPage() {
             return (
               <label
                 key={addon.id}
-                className={`flex items-start gap-3 rounded-xl p-5 border cursor-pointer transition-colors ${
+                className={`flex items-start gap-3.5 rounded-2xl p-5 border-2 cursor-pointer transition-all duration-200 ${
                   checked
-                    ? 'bg-white border-brand-teal ring-2 ring-brand-teal/20'
-                    : 'bg-white/90 border-brand-navy/10 hover:border-brand-teal/50'
+                    ? 'bg-white border-brand-teal shadow-[0_10px_24px_rgba(19,166,163,0.12)]'
+                    : 'bg-white border-transparent shadow-[0_2px_10px_rgba(18,59,96,0.04)] hover:border-brand-teal/40'
                 }`}
               >
                 <input
@@ -246,7 +264,7 @@ export default function PlanEventPage() {
           </div>
         </div>
       ) : (
-        <section className="rounded-3xl bg-white p-6 sm:p-8 border border-brand-navy/15 space-y-6">
+        <section className="rounded-[28px] bg-white p-7 sm:p-10 border border-brand-navy/8 shadow-[0_12px_40px_rgba(18,59,96,0.06)] space-y-6">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-xs font-semibold text-brand-teal-text">
               <Sparkles className="h-4 w-4 text-brand-teal" />

@@ -266,16 +266,16 @@ export function VenueDiscoveryClient() {
     : 'All Categories';
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 sm:space-y-8">
+    <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8 sm:space-y-10">
       {/* Page Heading */}
-      <div className="space-y-2">
-        <p className="text-xs sm:text-sm font-semibold text-brand-teal-text">
-          Venues Directory · Weighted Experience &amp; Budget Range Discovery
+      <div className="space-y-3 max-w-2xl">
+        <p className="text-xs font-semibold tracking-[0.12em] uppercase text-brand-teal-text">
+          Venues Directory
         </p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-brand-navy">
-          Explore Venues Across Lagos
+        <h1 className="text-3xl sm:text-[44px] font-bold tracking-[-0.03em] leading-[1.1] text-brand-navy">
+          Explore venues across Lagos.
         </h1>
-        <p className="text-sm sm:text-base text-brand-navy/80 max-w-2xl">
+        <p className="text-base text-brand-navy/75 leading-relaxed">
           Search by venue name, experience such as &ldquo;salsa&rdquo; or &ldquo;karaoke&rdquo;,
           location, category, and indicative{' '}
           <strong className="font-semibold text-brand-navy">Budget Range</strong>.
@@ -285,7 +285,7 @@ export function VenueDiscoveryClient() {
       {/* Primary Discovery Controls Card */}
       <section
         aria-label="Venue Search and Filters"
-        className="rounded-2xl bg-white p-4 sm:p-6 border border-brand-navy/15 space-y-4"
+        className="rounded-[28px] bg-white p-5 sm:p-7 border border-brand-navy/8 shadow-[0_10px_36px_rgba(18,59,96,0.06)] space-y-5"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 sm:gap-4">
           {/* 1. Main Search Input */}
@@ -745,13 +745,13 @@ export function VenueDiscoveryClient() {
 
       {/* Results Grid or Helpful Empty State */}
       {filteredVenues.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
           {filteredVenues.map((venue) => (
             <VenueCard key={venue.id} venue={venue} prefillDate={filters.date} />
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl bg-white p-8 sm:p-12 text-center border border-brand-navy/15 space-y-4">
+        <div className="rounded-[28px] bg-white p-10 sm:p-14 text-center border border-brand-navy/8 shadow-[0_8px_28px_rgba(18,59,96,0.05)] space-y-4">
           <h2 className="text-xl font-bold text-brand-navy">No venues matched those filters</h2>
           <p className="text-sm text-brand-navy/75 max-w-lg mx-auto leading-relaxed">
             Try widening your Budget Range, clearing a facility filter, or tell our concierge team

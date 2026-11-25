@@ -52,54 +52,66 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-8">
-      <div className="space-y-2">
-        <p className="text-xs font-semibold text-brand-teal-text">Customer Care &amp; Support</p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-brand-navy">Contact Us</h1>
-        <p className="text-base text-brand-navy/80">
+    <div className="mx-auto max-w-[960px] px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-10">
+      <div className="space-y-3 max-w-2xl">
+        <p className="text-xs font-semibold tracking-[0.12em] uppercase text-brand-teal-text">
+          Customer Care &amp; Support
+        </p>
+        <h1 className="text-3xl sm:text-[44px] font-bold tracking-[-0.03em] leading-[1.1] text-brand-navy">
+          Talk to our concierge team.
+        </h1>
+        <p className="text-base text-brand-navy/75 leading-relaxed">
           Have a question about a venue, a booking reference (DCP-XXXXXX), or event coordination?
           Reach our team directly or browse our{' '}
-          <Link href="/faq" className="text-brand-teal-text font-semibold underline">
+          <Link href="/faq" className="text-brand-teal-text font-semibold underline underline-offset-4">
             Frequently Asked Questions
           </Link>
           .
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-        <div className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-2 min-w-0">
-          <Mail className="h-5 w-5 text-brand-teal" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="rounded-[24px] bg-surface-teal p-6 space-y-3 min-w-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm">
+            <Mail className="h-5 w-5 text-brand-teal" />
+          </div>
           <h2 className="text-base font-bold text-brand-navy">Customer-Care Email</h2>
           <a
             href={`mailto:${siteSettings.supportEmail}`}
-            className="block text-sm font-semibold text-brand-teal-text underline break-words"
+            className="block text-sm font-semibold text-brand-teal-text underline underline-offset-4 break-words"
           >
             {siteSettings.supportEmail}
           </a>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-2 min-w-0">
-          <Phone className="h-5 w-5 text-brand-teal" />
+        <div className="rounded-[24px] bg-surface-teal p-6 space-y-3 min-w-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm">
+            <Phone className="h-5 w-5 text-brand-teal" />
+          </div>
           <h2 className="text-base font-bold text-brand-navy">Customer-Care Phone</h2>
           <a
             href={`tel:${siteSettings.supportPhone.replace(/\s+/g, '')}`}
-            className="block text-sm font-semibold text-brand-teal-text underline break-words"
+            className="block text-sm font-semibold text-brand-teal-text underline underline-offset-4 break-words"
           >
             {siteSettings.supportPhone}
           </a>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-2 min-w-0">
-          <Clock className="h-5 w-5 text-brand-teal" />
+        <div className="rounded-[24px] bg-surface-teal p-6 space-y-3 min-w-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm">
+            <Clock className="h-5 w-5 text-brand-teal" />
+          </div>
           <h2 className="text-base font-bold text-brand-navy">Support Hours</h2>
-          <p className="text-sm text-brand-navy/80">{siteSettings.supportHours}</p>
+          <p className="text-sm text-brand-navy/75 leading-relaxed">{siteSettings.supportHours}</p>
         </div>
       </div>
 
       {/* Public Support Enquiry Form */}
-      <section className="rounded-3xl bg-white p-6 sm:p-8 border border-brand-navy/15 space-y-5">
+      <section className="rounded-[28px] bg-white p-7 sm:p-10 border border-brand-navy/8 shadow-[0_12px_40px_rgba(18,59,96,0.06)] space-y-6">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-brand-navy">Send a Support Enquiry</h2>
+          <h2 className="text-2xl font-bold tracking-[-0.02em] text-brand-navy">
+            Send a Support Enquiry
+          </h2>
           <p className="text-sm text-brand-navy/75">
             Include your booking reference if your message relates to an existing venue request.
           </p>

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core Decompress Brand Palette (Section 4) */
+  /* Core Decompress Brand Palette */
   --color-brand-navy: #123B60;
   --color-brand-navy-hover: #0D2C49;
   --color-brand-navy-light: #1B4F7E;
@@ -11,10 +11,9 @@
   --color-brand-teal-text: #0B6E6C;
 
   --color-brand-coral: #FF704F;
-  /* Derived darker coral for hover and pressed states */
   --color-brand-coral-hover: #E55A38;
   --color-brand-coral-active: #CC4A2B;
-  /* Derived accessible warm accent text on light backgrounds (never use raw coral as body text) */
+  /* Accessible warm accent text on light backgrounds */
   --color-brand-coral-text: #B8371A;
 
   --color-brand-yellow: #FFC857;
@@ -27,6 +26,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-surface);
     color: var(--color-brand-navy);
@@ -38,5 +41,80 @@
   h1, h2, h3, h4, h5, h6 {
     color: var(--color-brand-navy);
     text-wrap: balance;
+  }
+}
+
+/* Minimal Template Ambient Motion & Surface Utilities */
+@keyframes dc-float {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(32px, 24px, 0) scale(1.12);
+  }
+}
+
+@keyframes dc-drift {
+  to {
+    background-position: 60px 30px;
+  }
+}
+
+@keyframes dc-dash {
+  to {
+    background-position: 28px 0;
+  }
+}
+
+@keyframes dc-travel {
+  from {
+    left: 0%;
+  }
+  to {
+    left: calc(100% - 10px);
+  }
+}
+
+.dc-hero-blob {
+  animation: dc-float 15s ease-in-out infinite alternate;
+}
+
+.dc-hero-blob-delayed {
+  animation: dc-float 15s ease-in-out -7s infinite alternate;
+}
+
+.dc-hero-dots {
+  background-image: radial-gradient(rgba(19, 166, 163, 0.24) 1.3px, transparent 1.4px);
+  background-size: 30px 30px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, #000 18%, transparent 68%);
+  mask-image: radial-gradient(ellipse at 50% 35%, #000 18%, transparent 68%);
+  animation: dc-drift 32s linear infinite;
+}
+
+.dc-route-line {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(19, 166, 163, 0.45) 0 8px,
+    transparent 8px 14px
+  );
+  background-size: 28px 2px;
+  animation: dc-dash 1.2s linear infinite;
+}
+
+.dc-route-dot {
+  animation: dc-travel 4.2s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .dc-hero-blob,
+  .dc-hero-blob-delayed,
+  .dc-hero-dots,
+  .dc-route-line,
+  .dc-route-dot {
+    animation: none !important;
   }
 }

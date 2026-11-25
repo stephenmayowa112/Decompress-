@@ -31,8 +31,8 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
     : `/book/${venue.slug}`;
 
   return (
-    <article className="group flex flex-col bg-white rounded-2xl border border-brand-navy/10 overflow-hidden transition-transform duration-150 hover:-translate-y-0.5">
-      {/* Representative Venue Image with Zero-Broken-Image Fallback + Save Favourite */}
+    <article className="group flex flex-col bg-white rounded-[24px] border border-brand-navy/8 shadow-[0_6px_28px_rgba(18,59,96,0.05)] hover:shadow-[0_22px_46px_rgba(18,59,96,0.11)] hover:-translate-y-1.5 overflow-hidden transition-all duration-300 ease-out">
+      {/* Clean Representative Venue Image + Save Favourite */}
       <div className="relative aspect-[16/10] w-full bg-brand-navy overflow-hidden">
         <Link
           href={detailHref}
@@ -46,7 +46,7 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               referrerPolicy="no-referrer"
               onError={() => setImgError(true)}
-              className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             />
           ) : (
             <div className="flex h-full w-full flex-col justify-end bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white">
@@ -57,23 +57,23 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
             </div>
           )}
         </Link>
-        <div className="absolute top-3 right-3 z-10">
+        <div className="absolute top-3.5 right-3.5 z-10">
           <FavouriteButton venueId={venue.id} venueName={venue.name} compact />
         </div>
       </div>
 
-      {/* Card Body — Clean Unboxed Metadata with Typographic Separators */}
-      <div className="flex flex-1 flex-col justify-between p-5 gap-4">
-        <div className="space-y-2">
+      {/* Card Body — Airy Spacing & Unboxed Metadata */}
+      <div className="flex flex-1 flex-col justify-between p-6 gap-5">
+        <div className="space-y-2.5">
           {/* Unboxed category & setting metadata line */}
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs font-medium text-brand-teal-text">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs font-semibold text-brand-teal-text">
             <span>{categoryNames.join(' / ')}</span>
             <span aria-hidden="true">·</span>
             <span className="capitalize">{venue.setting}</span>
             {venue.experienceTags.length > 0 && (
               <>
                 <span aria-hidden="true">·</span>
-                <span className="text-brand-navy/75">
+                <span className="font-medium text-brand-navy/65">
                   {venue.experienceTags
                     .slice(0, 2)
                     .map((t) => t.replace(/-/g, ' '))
@@ -84,10 +84,10 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
           </div>
 
           <div className="flex items-start justify-between gap-3">
-            <h3 className="text-lg font-bold text-brand-navy leading-snug min-w-0">
+            <h3 className="text-lg font-bold tracking-[-0.015em] text-brand-navy leading-snug min-w-0">
               <Link
                 href={detailHref}
-                className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
+                className="hover:text-brand-teal-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
               >
                 {venue.name}
               </Link>
@@ -100,28 +100,30 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
               >
                 <Star className="h-4 w-4 fill-brand-yellow text-brand-yellow shrink-0" />
                 <span>{venue.ratingAverage.toFixed(1)}</span>
-                <span className="text-xs font-normal text-brand-navy/60">({venue.reviewCount})</span>
+                <span className="text-xs font-normal text-brand-navy/55">({venue.reviewCount})</span>
               </div>
             )}
           </div>
 
-          <p className="flex items-center gap-1.5 text-sm text-brand-navy/75 min-w-0">
+          <p className="flex items-center gap-1.5 text-sm text-brand-navy/70 min-w-0">
             <MapPin className="h-4 w-4 text-brand-teal shrink-0" />
             <span className="truncate">
               {venue.area} · {venue.neighbourhood}
             </span>
           </p>
 
-          <p className="text-sm text-brand-navy/80 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-brand-navy/75 line-clamp-2 leading-relaxed">
             {venue.description}
           </p>
         </div>
 
-        {/* Indicative Budget Range (NEVER Minimum Spend) + Capacity + Responsive CTAs */}
-        <div className="pt-3 border-t border-brand-navy/10 space-y-3">
-          <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+        {/* Light Teal Indicative Budget Range Highlight + Capacity + Brand CTAs */}
+        <div className="space-y-3.5 pt-1">
+          <div className="rounded-2xl bg-surface-teal/85 px-4 py-3 flex flex-wrap items-baseline justify-between gap-2 text-sm">
             <div className="min-w-0">
-              <span className="block text-xs text-brand-navy/65">Indicative Budget Range</span>
+              <span className="block text-[11px] font-medium text-brand-teal-text">
+                Indicative Budget Range
+              </span>
               <span className="font-bold text-brand-navy tabular-nums">
                 {formatBudgetRange(
                   venue.budgetMinMinor,
@@ -131,13 +133,13 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
                 )}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-brand-navy/70 tabular-nums shrink-0">
+            <div className="flex items-center gap-1 text-xs font-medium text-brand-navy/70 tabular-nums shrink-0">
               <Users className="h-3.5 w-3.5 text-brand-teal" />
               <span>Up to {venue.capacity}</span>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <BrandLinkButton
               href={detailHref}
               variant="secondary"
