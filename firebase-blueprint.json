@@ -26,6 +26,51 @@
       },
       "required": ["uid", "email", "googleLinked", "emailVerified"]
     },
+    "Favourite": {
+      "title": "Favourite",
+      "description": "Saved venue bookmark belonging to a verified registered user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "venueId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "userId", "venueId", "createdAtUtc"]
+    },
+    "Wallet": {
+      "title": "Wallet",
+      "description": "Local mirror of a fintech-backed customer wallet balance (account-only, WALLET_ENABLED).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "balanceMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "providerAccountRef": { "type": "string", "maxLength": 120 },
+        "updatedAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "userId", "balanceMinor", "currency", "providerAccountRef", "updatedAtUtc"]
+    },
+    "WalletTransaction": {
+      "title": "WalletTransaction",
+      "description": "Mirror record of a wallet funding, booking payment, refund, or reversal.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "walletId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "type": { "type": "string", "enum": ["funding", "booking_payment", "refund", "reversal"] },
+        "amountMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "enum": ["pending", "succeeded", "failed", "refunded", "reversed"] },
+        "providerReference": { "type": "string", "maxLength": 120 },
+        "bookingReference": { "type": "string", "maxLength": 20 },
+        "description": { "type": "string", "maxLength": 300 },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "walletId", "userId", "type", "amountMinor", "currency", "status", "providerReference", "description", "createdAtUtc"]
+    },
     "AdminMember": {
       "title": "AdminMember",
       "description": "Staff role membership document for Decompress admin dashboard.",
@@ -113,7 +158,7 @@
         "facilitySlugs": { "type": "array" },
         "occasions": { "type": "array" },
         "bookingTypes": { "type": "array" },
-        "heroImageUrl": { "type": "string", "maxLength": 500 },
+        "heroImageUrl": { "type": "string", "maxLength": 4000 },
         "galleryImages": { "type": "array" },
         "confirmedOfferText": { "type": "string", "maxLength": 400 },
         "ratingAverage": { "type": "number" },
@@ -122,21 +167,192 @@
         "isPublished": { "type": "boolean" }
       },
       "required": [
-        "id",
-        "name",
-        "slug",
-        "description",
-        "address",
-        "locationId",
-        "setting",
-        "capacity",
-        "budgetMinMinor",
-        "budgetMaxMinor",
-        "currency",
-        "budgetBasis",
-        "isFeatured",
-        "isPublished"
+        "id", "name", "slug", "description", "address", "locationId",
+        "setting", "capacity", "budgetMinMinor", "budgetMaxMinor",
+        "currency", "budgetBasis", "isFeatured", "isPublished"
       ]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Concierge booking request (guest or signed-in member) with DCP-XXXXXX reference.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "reference": { "type": "string", "maxLength": 20, "pattern": "^DCP-[A-Z0-9]{6}$" },
+        "status": { "type": "string", "enum": ["pending", "approved", "unavailable", "confirmed", "completed", "cancelled"] },
+        "venueId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "venueName": { "type": "string", "maxLength": 160 },
+        "venueSlug": { "type": "string", "maxLength": 160, "pattern": "^[a-z0-9\\-]+$" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "guestName": { "type": "string", "maxLength": 120 },
+        "guestEmail": { "type": "string", "format": "email", "maxLength": 160 },
+        "guestPhone": { "type": "string", "maxLength": 40 },
+        "date": { "type": "string", "maxLength": 20 },
+        "preferredTime": { "type": "string", "maxLength": 20 },
+        "guestCount": { "type": "number" },
+        "occasion": { "type": "string", "maxLength": 120 },
+        "bookingType": { "type": "string", "enum": ["table", "group", "private_hire"] },
+        "specialRequests": { "type": "string", "maxLength": 1500 },
+        "eventServiceLevel": { "type": "string", "maxLength": 80 },
+        "selectedAddOnIds": { "type": "array" },
+        "amountDueMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "cancellationReason": { "type": "string", "maxLength": 500 },
+        "reviewToken": { "type": "string", "maxLength": 80 },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": [
+        "id", "reference", "status", "venueId", "venueName", "venueSlug",
+        "userId", "guestName", "guestEmail", "guestPhone", "date",
+        "preferredTime", "guestCount", "occasion", "bookingType",
+        "currency", "createdAtUtc"
+      ]
+    },
+    "BookingStatusHistory": {
+      "title": "BookingStatusHistory",
+      "description": "Immutable audit entry for every booking status transition.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "fromStatus": { "type": "string", "maxLength": 30 },
+        "toStatus": { "type": "string", "maxLength": 30 },
+        "actor": { "type": "string", "maxLength": 160 },
+        "note": { "type": "string", "maxLength": 500 },
+        "timestampUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "bookingId", "fromStatus", "toStatus", "actor", "note", "timestampUtc"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Provider-backed payment intent and confirmation record for a booking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingReference": { "type": "string", "maxLength": 20 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "provider": { "type": "string", "maxLength": 60 },
+        "providerReference": { "type": "string", "maxLength": 120 },
+        "amountMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "enum": ["pending", "succeeded", "failed", "refunded", "reversed"] },
+        "method": { "type": "string", "enum": ["guest_checkout_link", "wallet", "card_sandbox"] },
+        "guestPayToken": { "type": "string", "maxLength": 80 },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "bookingId", "bookingReference", "provider", "providerReference", "amountMinor", "currency", "status", "method", "guestPayToken", "createdAtUtc"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Itemised paid invoice issued upon booking confirmation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingReference": { "type": "string", "maxLength": 20 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "invoiceNumber": { "type": "string", "maxLength": 40 },
+        "venueName": { "type": "string", "maxLength": 160 },
+        "eventDate": { "type": "string", "maxLength": 20 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "customerEmail": { "type": "string", "maxLength": 160 },
+        "companyName": { "type": "string", "maxLength": 160 },
+        "lineItems": { "type": "array" },
+        "discountOrFeeMinor": { "type": "number" },
+        "amountPaidMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "status": { "type": "string", "enum": ["paid", "refunded"] },
+        "issuedAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "bookingId", "bookingReference", "invoiceNumber", "venueName", "eventDate", "customerName", "customerEmail", "amountPaidMinor", "currency", "status", "issuedAtUtc"]
+    },
+    "Settlement": {
+      "title": "Settlement",
+      "description": "Admin-only commercial reconciliation record per booking (free-form fields, zero formulas, never customer visible).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingReference": { "type": "string", "maxLength": 20 },
+        "customerAmountReceivedMinor": { "type": "number" },
+        "venueBillAmountMinor": { "type": "number" },
+        "venueBillFileName": { "type": "string", "maxLength": 200 },
+        "agreedDiscountMinor": { "type": "number" },
+        "decompressShareMinor": { "type": "number" },
+        "amountPayableToVenueMinor": { "type": "number" },
+        "amountRetainedMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "settlementStatus": { "type": "string", "enum": ["unreconciled", "pending_payout", "settled", "disputed"] },
+        "settledAtUtc": { "type": "string", "maxLength": 40 },
+        "updatedBy": { "type": "string", "maxLength": 160 },
+        "updatedAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "bookingId", "bookingReference", "customerAmountReceivedMinor", "venueBillAmountMinor", "agreedDiscountMinor", "decompressShareMinor", "amountPayableToVenueMinor", "amountRetainedMinor", "currency", "settlementStatus", "updatedBy", "updatedAtUtc"]
+    },
+    "EventPlanningRequest": {
+      "title": "EventPlanningRequest",
+      "description": "Standalone or booking-attached event-planning and coordination request.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "reference": { "type": "string", "maxLength": 20 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "guestName": { "type": "string", "maxLength": 120 },
+        "guestEmail": { "type": "string", "maxLength": 160 },
+        "guestPhone": { "type": "string", "maxLength": 40 },
+        "serviceLevel": { "type": "string", "enum": ["event_planning_assistance", "on_the_day_coordination", "full_planning_and_coordination"] },
+        "occasion": { "type": "string", "maxLength": 120 },
+        "date": { "type": "string", "maxLength": 20 },
+        "location": { "type": "string", "maxLength": 160 },
+        "guestCount": { "type": "number" },
+        "budgetMinor": { "type": "number" },
+        "currency": { "type": "string", "maxLength": 10 },
+        "assistanceNeeded": { "type": "string", "maxLength": 2000 },
+        "selectedAddOnIds": { "type": "array" },
+        "status": { "type": "string", "enum": ["new", "in_discussion", "quoted", "accepted", "in_progress", "completed", "declined"] },
+        "quotedAmountMinor": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 1500 },
+        "linkedBookingId": { "type": "string", "maxLength": 128 },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "reference", "userId", "guestName", "guestEmail", "guestPhone", "serviceLevel", "occasion", "date", "location", "guestCount", "budgetMinor", "currency", "assistanceNeeded", "status", "createdAtUtc"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Verified customer review tied strictly to a completed booking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "bookingReference": { "type": "string", "maxLength": 20 },
+        "venueId": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "venueName": { "type": "string", "maxLength": 160 },
+        "reviewerName": { "type": "string", "maxLength": 120 },
+        "rating": { "type": "number" },
+        "venueFeedback": { "type": "string", "maxLength": 1500 },
+        "experienceFeedback": { "type": "string", "maxLength": 1500 },
+        "isVerified": { "type": "boolean" },
+        "isHidden": { "type": "boolean" },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "bookingId", "bookingReference", "venueId", "venueName", "reviewerName", "rating", "isVerified", "isHidden", "createdAtUtc"]
+    },
+    "SupportEnquiry": {
+      "title": "SupportEnquiry",
+      "description": "Public customer support enquiry routed to Decompress admin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 160 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "bookingReference": { "type": "string", "maxLength": 30 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved"] },
+        "createdAtUtc": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["id", "name", "email", "message", "status", "createdAtUtc"]
     },
     "SiteSettings": {
       "title": "SiteSettings",
@@ -151,15 +367,7 @@
         "defaultCurrency": { "type": "string", "maxLength": 10 },
         "defaultTimezone": { "type": "string", "maxLength": 64 }
       },
-      "required": [
-        "supportEmail",
-        "supportPhone",
-        "supportHours",
-        "guestPaymentMode",
-        "walletEnabled",
-        "defaultCurrency",
-        "defaultTimezone"
-      ]
+      "required": ["supportEmail", "supportPhone", "supportHours", "guestPaymentMode", "walletEnabled", "defaultCurrency", "defaultTimezone"]
     },
     "FAQTopic": {
       "title": "FAQTopic",
@@ -214,6 +422,18 @@
       "schema": { "$ref": "#/entities/UserPrivate" },
       "description": "Isolated PII and notification preferences for user account."
     },
+    "/users/{userId}/favourites/{favouriteId}": {
+      "schema": { "$ref": "#/entities/Favourite" },
+      "description": "Saved favourite venues belonging to a verified registered user."
+    },
+    "/users/{userId}/wallet/{walletDocId}": {
+      "schema": { "$ref": "#/entities/Wallet" },
+      "description": "Local mirror of provider-backed wallet balance."
+    },
+    "/users/{userId}/walletTransactions/{txId}": {
+      "schema": { "$ref": "#/entities/WalletTransaction" },
+      "description": "Wallet funding, booking payment, refund, and reversal transactions."
+    },
     "/admins/{adminId}": {
       "schema": { "$ref": "#/entities/AdminMember" },
       "description": "Trusted staff/admin membership records."
@@ -237,6 +457,38 @@
     "/venues/{venueId}": {
       "schema": { "$ref": "#/entities/Venue" },
       "description": "Published and draft venue profiles."
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Concierge booking requests supporting guest submission and verified-email account linking."
+    },
+    "/bookings/{bookingId}/history/{historyId}": {
+      "schema": { "$ref": "#/entities/BookingStatusHistory" },
+      "description": "Audit trail of every booking status transition."
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "Payment intents and checkout records."
+    },
+    "/invoices/{invoiceId}": {
+      "schema": { "$ref": "#/entities/Invoice" },
+      "description": "Issued paid booking invoices."
+    },
+    "/settlements/{bookingId}": {
+      "schema": { "$ref": "#/entities/Settlement" },
+      "description": "Admin-only commercial settlement reconciliation records."
+    },
+    "/eventPlanningRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/EventPlanningRequest" },
+      "description": "Standalone and booking-attached event planning requests."
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Verified post-completion reviews."
+    },
+    "/supportEnquiries/{enquiryId}": {
+      "schema": { "$ref": "#/entities/SupportEnquiry" },
+      "description": "Customer support enquiries visible to Decompress staff."
     },
     "/siteSettings/{settingId}": {
       "schema": { "$ref": "#/entities/SiteSettings" },

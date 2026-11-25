@@ -8,48 +8,65 @@ import { Venue } from '@/src/types/domain';
 import { formatBudgetRange } from '@/src/lib/format';
 import { SEED_CATEGORIES } from '@/src/lib/seed-data';
 import { BrandLinkButton } from '@/src/components/ui/Button';
+import { FavouriteButton } from '@/src/components/ui/FavouriteButton';
 
 export interface VenueCardProps {
   venue: Venue;
+  prefillDate?: string;
 }
 
-export function VenueCard({ venue }: VenueCardProps) {
+export function VenueCard({ venue, prefillDate }: VenueCardProps) {
   const [imgError, setImgError] = useState(false);
 
   const categoryNames = venue.categorySlugs
     .map((slug) => SEED_CATEGORIES.find((c) => c.slug === slug)?.name || slug)
     .slice(0, 2);
 
+  const detailHref = prefillDate
+    ? `/venues/${venue.slug}?date=${encodeURIComponent(prefillDate)}`
+    : `/venues/${venue.slug}`;
+
+  const bookHref = prefillDate
+    ? `/book/${venue.slug}?date=${encodeURIComponent(prefillDate)}`
+    : `/book/${venue.slug}`;
+
   return (
     <article className="group flex flex-col bg-white rounded-2xl border border-brand-navy/10 overflow-hidden transition-transform duration-150 hover:-translate-y-0.5">
-      {/* Representative Venue Image with Zero-Broken-Image Fallback */}
-      <Link
-        href={`/venues/${venue.slug}`}
-        className="relative block aspect-[16/10] w-full bg-brand-navy overflow-hidden focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
-      >
-        {!imgError && venue.heroImageUrl ? (
-          <Image
-            src={venue.heroImageUrl}
-            alt={venue.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            referrerPolicy="no-referrer"
-            onError={() => setImgError(true)}
-            className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div className="flex h-full w-full flex-col justify-end bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white">
-            <p className="text-lg font-bold">{venue.name}</p>
-            <p className="text-sm text-surface-teal">{venue.area}, {venue.city}</p>
-          </div>
-        )}
-      </Link>
+      {/* Representative Venue Image with Zero-Broken-Image Fallback + Save Favourite */}
+      <div className="relative aspect-[16/10] w-full bg-brand-navy overflow-hidden">
+        <Link
+          href={detailHref}
+          className="relative block h-full w-full focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+        >
+          {!imgError && venue.heroImageUrl ? (
+            <Image
+              src={venue.heroImageUrl}
+              alt={venue.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              referrerPolicy="no-referrer"
+              onError={() => setImgError(true)}
+              className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col justify-end bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white">
+              <p className="text-lg font-bold">{venue.name}</p>
+              <p className="text-sm text-surface-teal">
+                {venue.area}, {venue.city}
+              </p>
+            </div>
+          )}
+        </Link>
+        <div className="absolute top-3 right-3 z-10">
+          <FavouriteButton venueId={venue.id} venueName={venue.name} compact />
+        </div>
+      </div>
 
       {/* Card Body — Clean Unboxed Metadata with Typographic Separators */}
       <div className="flex flex-1 flex-col justify-between p-5 gap-4">
         <div className="space-y-2">
           {/* Unboxed category & setting metadata line */}
-          <div className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-brand-teal-text">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs font-medium text-brand-teal-text">
             <span>{categoryNames.join(' / ')}</span>
             <span aria-hidden="true">·</span>
             <span className="capitalize">{venue.setting}</span>
@@ -57,16 +74,19 @@ export function VenueCard({ venue }: VenueCardProps) {
               <>
                 <span aria-hidden="true">·</span>
                 <span className="text-brand-navy/75">
-                  {venue.experienceTags.slice(0, 2).join(', ')}
+                  {venue.experienceTags
+                    .slice(0, 2)
+                    .map((t) => t.replace(/-/g, ' '))
+                    .join(', ')}
                 </span>
               </>
             )}
           </div>
 
           <div className="flex items-start justify-between gap-3">
-            <h3 className="text-lg font-bold text-brand-navy leading-snug">
+            <h3 className="text-lg font-bold text-brand-navy leading-snug min-w-0">
               <Link
-                href={`/venues/${venue.slug}`}
+                href={detailHref}
                 className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
               >
                 {venue.name}
@@ -85,7 +105,7 @@ export function VenueCard({ venue }: VenueCardProps) {
             )}
           </div>
 
-          <p className="flex items-center gap-1.5 text-sm text-brand-navy/75">
+          <p className="flex items-center gap-1.5 text-sm text-brand-navy/75 min-w-0">
             <MapPin className="h-4 w-4 text-brand-teal shrink-0" />
             <span className="truncate">
               {venue.area} · {venue.neighbourhood}
@@ -97,10 +117,10 @@ export function VenueCard({ venue }: VenueCardProps) {
           </p>
         </div>
 
-        {/* Indicative Budget Range (NEVER Minimum Spend) + Capacity + CTA */}
+        {/* Indicative Budget Range (NEVER Minimum Spend) + Capacity + Responsive CTAs */}
         <div className="pt-3 border-t border-brand-navy/10 space-y-3">
-          <div className="flex items-baseline justify-between gap-2 text-sm">
-            <div>
+          <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+            <div className="min-w-0">
               <span className="block text-xs text-brand-navy/65">Indicative Budget Range</span>
               <span className="font-bold text-brand-navy tabular-nums">
                 {formatBudgetRange(
@@ -117,22 +137,22 @@ export function VenueCard({ venue }: VenueCardProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 pt-1">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
             <BrandLinkButton
-              href={`/venues/${venue.slug}`}
+              href={detailHref}
               variant="secondary"
               size="sm"
-              fullWidthOnMobile={false}
-              className="flex-1 text-base"
+              fullWidthOnMobile
+              className="sm:flex-1 text-base"
             >
               View Details
             </BrandLinkButton>
             <BrandLinkButton
-              href={`/book/${venue.slug}`}
+              href={bookHref}
               variant="primary"
               size="sm"
-              fullWidthOnMobile={false}
-              className="flex-1"
+              fullWidthOnMobile
+              className="sm:flex-1"
             >
               Book Now
             </BrandLinkButton>

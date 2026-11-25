@@ -22,6 +22,8 @@ export function formatMoneyMinor(amountMinor: number, currency = 'NGN'): string 
   }
 }
 
+export const formatCurrencyMinor = formatMoneyMinor;
+
 /**
  * Format indicative Budget Range (never called "Minimum Spend").
  */

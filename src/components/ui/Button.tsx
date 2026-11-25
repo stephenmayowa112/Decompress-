@@ -37,8 +37,8 @@ const VARIANT_CLASSES: Record<BrandButtonVariant, string> = {
 
 const SIZE_CLASSES: Record<BrandButtonSize, string> = {
   // Section 4 Accessibility requirement: semibold labels at 18px (text-lg) or larger on coral buttons
-  lg: 'px-6 py-3.5 text-lg font-semibold rounded-2xl min-h-[52px]',
-  md: 'px-5 py-3 text-lg font-semibold rounded-2xl min-h-[48px]',
+  lg: 'px-4 sm:px-6 py-3.5 text-lg font-semibold rounded-2xl min-h-[52px]',
+  md: 'px-4 sm:px-5 py-3 text-lg font-semibold rounded-2xl min-h-[48px]',
   sm: 'px-4 py-2.5 text-base font-semibold rounded-xl min-h-[44px]',
 };
 

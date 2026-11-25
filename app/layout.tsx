@@ -34,11 +34,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={plusJakartaSans.variable}>
-      <body suppressHydrationWarning className="min-h-screen flex flex-col bg-surface text-brand-navy">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen flex flex-col bg-surface text-brand-navy overflow-x-clip"
+      >
         <ErrorBoundary>
           <DecompressProvider>
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 min-w-0">{children}</main>
             <Footer />
           </DecompressProvider>
         </ErrorBoundary>

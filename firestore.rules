@@ -69,6 +69,287 @@ service cloud.firestore {
         (!('promotionalEmailsOptIn' in data) || data.promotionalEmailsOptIn is bool);
     }
 
+    function isValidFavourite(data, userId, favouriteId) {
+      return data.keys().hasAll(['id', 'userId', 'venueId', 'createdAtUtc']) &&
+        data.keys().hasOnly(['id', 'userId', 'venueId', 'createdAtUtc']) &&
+        data.id is string && data.id == favouriteId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.userId is string && data.userId == userId && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.venueId is string && data.venueId == favouriteId && data.venueId.size() >= 1 && data.venueId.size() <= 128 &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidWallet(data, userId, walletDocId) {
+      return data.keys().hasAll(['id', 'userId', 'balanceMinor', 'currency', 'providerAccountRef', 'updatedAtUtc']) &&
+        data.keys().hasOnly(['id', 'userId', 'balanceMinor', 'currency', 'providerAccountRef', 'updatedAtUtc']) &&
+        data.id is string && data.id == walletDocId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.userId is string && data.userId == userId && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.balanceMinor is number && data.balanceMinor >= 0 &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.providerAccountRef is string && data.providerAccountRef.size() >= 3 && data.providerAccountRef.size() <= 120 &&
+        data.updatedAtUtc is string && data.updatedAtUtc.size() >= 10 && data.updatedAtUtc.size() <= 40;
+    }
+
+    function isValidWalletTransaction(data, userId, txId) {
+      return data.keys().hasAll([
+          'id', 'walletId', 'userId', 'type', 'amountMinor',
+          'currency', 'status', 'providerReference', 'description', 'createdAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'walletId', 'userId', 'type', 'amountMinor',
+          'currency', 'status', 'providerReference', 'bookingReference', 'description', 'createdAtUtc'
+        ]) &&
+        data.id is string && data.id == txId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.walletId is string && data.walletId.size() >= 1 && data.walletId.size() <= 128 &&
+        data.userId is string && data.userId == userId && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.type is string && (
+          data.type == 'funding' || data.type == 'booking_payment' ||
+          data.type == 'refund' || data.type == 'reversal'
+        ) &&
+        data.amountMinor is number && data.amountMinor >= 0 &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.status is string && (
+          data.status == 'pending' || data.status == 'succeeded' ||
+          data.status == 'failed' || data.status == 'refunded' || data.status == 'reversed'
+        ) &&
+        data.providerReference is string && data.providerReference.size() >= 3 && data.providerReference.size() <= 120 &&
+        (!('bookingReference' in data) || (data.bookingReference is string && data.bookingReference.size() <= 20)) &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 300 &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidBooking(data, bookingId) {
+      return data.keys().hasAll([
+          'id', 'reference', 'status', 'venueId', 'venueName', 'venueSlug',
+          'userId', 'guestName', 'guestEmail', 'guestPhone', 'date',
+          'preferredTime', 'guestCount', 'occasion', 'bookingType',
+          'currency', 'createdAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'reference', 'status', 'venueId', 'venueName', 'venueSlug',
+          'userId', 'guestName', 'guestEmail', 'guestPhone', 'date',
+          'preferredTime', 'guestCount', 'occasion', 'bookingType',
+          'specialRequests', 'eventServiceLevel', 'selectedAddOnIds',
+          'amountDueMinor', 'currency', 'cancellationReason', 'reviewToken', 'createdAtUtc'
+        ]) &&
+        data.id is string && data.id == bookingId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.reference is string && data.reference.size() == 10 && data.reference.matches('^DCP-[A-Z0-9]{6}$') &&
+        data.status is string && (
+          data.status == 'pending' ||
+          data.status == 'approved' ||
+          data.status == 'unavailable' ||
+          data.status == 'confirmed' ||
+          data.status == 'completed' ||
+          data.status == 'cancelled'
+        ) &&
+        data.venueId is string && data.venueId.size() >= 1 && data.venueId.size() <= 128 &&
+        data.venueName is string && data.venueName.size() >= 1 && data.venueName.size() <= 160 &&
+        data.venueSlug is string && data.venueSlug.size() >= 1 && data.venueSlug.size() <= 160 && data.venueSlug.matches('^[a-z0-9\\-]+$') &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.guestName is string && data.guestName.size() >= 1 && data.guestName.size() <= 120 &&
+        data.guestEmail is string && data.guestEmail.size() >= 3 && data.guestEmail.size() <= 160 &&
+        data.guestPhone is string && data.guestPhone.size() >= 5 && data.guestPhone.size() <= 40 &&
+        data.date is string && data.date.size() >= 8 && data.date.size() <= 20 &&
+        data.preferredTime is string && data.preferredTime.size() >= 3 && data.preferredTime.size() <= 20 &&
+        data.guestCount is number && data.guestCount >= 1 && data.guestCount <= 50000 &&
+        data.occasion is string && data.occasion.size() >= 1 && data.occasion.size() <= 120 &&
+        data.bookingType is string && (
+          data.bookingType == 'table' || data.bookingType == 'group' || data.bookingType == 'private_hire'
+        ) &&
+        (!('specialRequests' in data) || (data.specialRequests is string && data.specialRequests.size() <= 1500)) &&
+        (!('eventServiceLevel' in data) || (data.eventServiceLevel is string && data.eventServiceLevel.size() <= 80)) &&
+        (!('selectedAddOnIds' in data) || (data.selectedAddOnIds is list && data.selectedAddOnIds.size() <= 10 && (data.selectedAddOnIds.size() == 0 || (data.selectedAddOnIds[0] is string && data.selectedAddOnIds[0].size() <= 128)))) &&
+        (!('amountDueMinor' in data) || (data.amountDueMinor is number && data.amountDueMinor >= 0)) &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        (!('cancellationReason' in data) || (data.cancellationReason is string && data.cancellationReason.size() <= 500)) &&
+        (!('reviewToken' in data) || (data.reviewToken is string && data.reviewToken.size() <= 80)) &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidBookingHistory(data, bookingId, historyId) {
+      return data.keys().hasAll(['id', 'bookingId', 'fromStatus', 'toStatus', 'actor', 'note', 'timestampUtc']) &&
+        data.keys().hasOnly(['id', 'bookingId', 'fromStatus', 'toStatus', 'actor', 'note', 'timestampUtc']) &&
+        data.id is string && data.id == historyId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.bookingId is string && data.bookingId == bookingId && data.bookingId.size() >= 1 && data.bookingId.size() <= 128 &&
+        data.fromStatus is string && data.fromStatus.size() >= 1 && data.fromStatus.size() <= 30 &&
+        data.toStatus is string && data.toStatus.size() >= 1 && data.toStatus.size() <= 30 &&
+        data.actor is string && data.actor.size() >= 1 && data.actor.size() <= 160 &&
+        data.note is string && data.note.size() >= 1 && data.note.size() <= 500 &&
+        data.timestampUtc is string && data.timestampUtc.size() >= 10 && data.timestampUtc.size() <= 40;
+    }
+
+    function isValidPayment(data, paymentId) {
+      return data.keys().hasAll([
+          'id', 'bookingId', 'bookingReference', 'provider', 'providerReference',
+          'amountMinor', 'currency', 'status', 'method', 'guestPayToken', 'createdAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'bookingId', 'bookingReference', 'userId', 'provider', 'providerReference',
+          'amountMinor', 'currency', 'status', 'method', 'guestPayToken', 'createdAtUtc'
+        ]) &&
+        data.id is string && data.id == paymentId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.bookingId is string && data.bookingId.size() >= 1 && data.bookingId.size() <= 128 &&
+        data.bookingReference is string && data.bookingReference.size() == 10 &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128)) &&
+        data.provider is string && data.provider.size() >= 1 && data.provider.size() <= 60 &&
+        data.providerReference is string && data.providerReference.size() >= 1 && data.providerReference.size() <= 120 &&
+        data.amountMinor is number && data.amountMinor >= 0 &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.status is string && (
+          data.status == 'pending' || data.status == 'succeeded' ||
+          data.status == 'failed' || data.status == 'refunded' || data.status == 'reversed'
+        ) &&
+        data.method is string && (
+          data.method == 'guest_checkout_link' || data.method == 'wallet' || data.method == 'card_sandbox'
+        ) &&
+        data.guestPayToken is string && data.guestPayToken.size() >= 6 && data.guestPayToken.size() <= 80 &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidInvoice(data, invoiceId) {
+      return data.keys().hasAll([
+          'id', 'bookingId', 'bookingReference', 'invoiceNumber', 'venueName',
+          'eventDate', 'customerName', 'customerEmail', 'amountPaidMinor',
+          'currency', 'status', 'issuedAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'bookingId', 'bookingReference', 'userId', 'invoiceNumber', 'venueName',
+          'eventDate', 'customerName', 'customerEmail', 'companyName', 'lineItems',
+          'discountOrFeeMinor', 'amountPaidMinor', 'currency', 'status', 'issuedAtUtc'
+        ]) &&
+        data.id is string && data.id == invoiceId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.bookingId is string && data.bookingId.size() >= 1 && data.bookingId.size() <= 128 &&
+        data.bookingReference is string && data.bookingReference.size() == 10 &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128)) &&
+        data.invoiceNumber is string && data.invoiceNumber.size() >= 4 && data.invoiceNumber.size() <= 40 &&
+        data.venueName is string && data.venueName.size() >= 1 && data.venueName.size() <= 160 &&
+        data.eventDate is string && data.eventDate.size() >= 8 && data.eventDate.size() <= 20 &&
+        data.customerName is string && data.customerName.size() >= 1 && data.customerName.size() <= 120 &&
+        data.customerEmail is string && data.customerEmail.size() >= 3 && data.customerEmail.size() <= 160 &&
+        (!('companyName' in data) || (data.companyName is string && data.companyName.size() <= 160)) &&
+        (!('lineItems' in data) || (data.lineItems is list && data.lineItems.size() <= 20)) &&
+        (!('discountOrFeeMinor' in data) || data.discountOrFeeMinor is number) &&
+        data.amountPaidMinor is number && data.amountPaidMinor >= 0 &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.status is string && (data.status == 'paid' || data.status == 'refunded') &&
+        data.issuedAtUtc is string && data.issuedAtUtc.size() >= 10 && data.issuedAtUtc.size() <= 40;
+    }
+
+    function isValidSettlement(data, bookingId) {
+      return data.keys().hasAll([
+          'id', 'bookingId', 'bookingReference', 'customerAmountReceivedMinor',
+          'venueBillAmountMinor', 'agreedDiscountMinor', 'decompressShareMinor',
+          'amountPayableToVenueMinor', 'amountRetainedMinor', 'currency',
+          'settlementStatus', 'updatedBy', 'updatedAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'bookingId', 'bookingReference', 'customerAmountReceivedMinor',
+          'venueBillAmountMinor', 'venueBillFileName', 'agreedDiscountMinor',
+          'decompressShareMinor', 'amountPayableToVenueMinor', 'amountRetainedMinor',
+          'currency', 'settlementStatus', 'settledAtUtc', 'updatedBy', 'updatedAtUtc'
+        ]) &&
+        data.id is string && data.id == bookingId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.bookingId is string && data.bookingId == bookingId && data.bookingId.size() >= 1 && data.bookingId.size() <= 128 &&
+        data.bookingReference is string && data.bookingReference.size() == 10 &&
+        data.customerAmountReceivedMinor is number && data.customerAmountReceivedMinor >= 0 &&
+        data.venueBillAmountMinor is number && data.venueBillAmountMinor >= 0 &&
+        (!('venueBillFileName' in data) || (data.venueBillFileName is string && data.venueBillFileName.size() <= 200)) &&
+        data.agreedDiscountMinor is number &&
+        data.decompressShareMinor is number &&
+        data.amountPayableToVenueMinor is number &&
+        data.amountRetainedMinor is number &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.settlementStatus is string && (
+          data.settlementStatus == 'unreconciled' ||
+          data.settlementStatus == 'pending_payout' ||
+          data.settlementStatus == 'settled' ||
+          data.settlementStatus == 'disputed'
+        ) &&
+        (!('settledAtUtc' in data) || (data.settledAtUtc is string && data.settledAtUtc.size() <= 40)) &&
+        data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 160 &&
+        data.updatedAtUtc is string && data.updatedAtUtc.size() >= 10 && data.updatedAtUtc.size() <= 40;
+    }
+
+    function isValidEventRequest(data, requestId) {
+      return data.keys().hasAll([
+          'id', 'reference', 'userId', 'guestName', 'guestEmail', 'guestPhone',
+          'serviceLevel', 'occasion', 'date', 'location', 'guestCount',
+          'budgetMinor', 'currency', 'assistanceNeeded', 'status', 'createdAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'reference', 'userId', 'guestName', 'guestEmail', 'guestPhone',
+          'serviceLevel', 'occasion', 'date', 'location', 'guestCount',
+          'budgetMinor', 'currency', 'assistanceNeeded', 'selectedAddOnIds',
+          'status', 'quotedAmountMinor', 'notes', 'linkedBookingId', 'createdAtUtc'
+        ]) &&
+        data.id is string && data.id == requestId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.reference is string && data.reference.size() >= 6 && data.reference.size() <= 20 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.guestName is string && data.guestName.size() >= 1 && data.guestName.size() <= 120 &&
+        data.guestEmail is string && data.guestEmail.size() >= 3 && data.guestEmail.size() <= 160 &&
+        data.guestPhone is string && data.guestPhone.size() >= 5 && data.guestPhone.size() <= 40 &&
+        data.serviceLevel is string && (
+          data.serviceLevel == 'event_planning_assistance' ||
+          data.serviceLevel == 'on_the_day_coordination' ||
+          data.serviceLevel == 'full_planning_and_coordination'
+        ) &&
+        data.occasion is string && data.occasion.size() >= 1 && data.occasion.size() <= 120 &&
+        data.date is string && data.date.size() >= 8 && data.date.size() <= 20 &&
+        data.location is string && data.location.size() >= 1 && data.location.size() <= 160 &&
+        data.guestCount is number && data.guestCount >= 1 && data.guestCount <= 50000 &&
+        data.budgetMinor is number && data.budgetMinor >= 0 &&
+        data.currency is string && data.currency.size() >= 3 && data.currency.size() <= 10 &&
+        data.assistanceNeeded is string && data.assistanceNeeded.size() >= 1 && data.assistanceNeeded.size() <= 2000 &&
+        (!('selectedAddOnIds' in data) || (data.selectedAddOnIds is list && data.selectedAddOnIds.size() <= 10 && (data.selectedAddOnIds.size() == 0 || (data.selectedAddOnIds[0] is string && data.selectedAddOnIds[0].size() <= 128)))) &&
+        data.status is string && (
+          data.status == 'new' || data.status == 'in_discussion' || data.status == 'quoted' ||
+          data.status == 'accepted' || data.status == 'in_progress' ||
+          data.status == 'completed' || data.status == 'declined'
+        ) &&
+        (!('quotedAmountMinor' in data) || (data.quotedAmountMinor is number && data.quotedAmountMinor >= 0)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1500)) &&
+        (!('linkedBookingId' in data) || (data.linkedBookingId is string && data.linkedBookingId.size() <= 128)) &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidReview(data, reviewId) {
+      return data.keys().hasAll([
+          'id', 'bookingId', 'bookingReference', 'venueId', 'venueName',
+          'reviewerName', 'rating', 'isVerified', 'isHidden', 'createdAtUtc'
+        ]) &&
+        data.keys().hasOnly([
+          'id', 'bookingId', 'bookingReference', 'venueId', 'venueName',
+          'reviewerName', 'rating', 'venueFeedback', 'experienceFeedback',
+          'isVerified', 'isHidden', 'createdAtUtc'
+        ]) &&
+        data.id is string && data.id == reviewId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.bookingId is string && data.bookingId.size() >= 1 && data.bookingId.size() <= 128 &&
+        data.bookingReference is string && data.bookingReference.size() == 10 &&
+        data.venueId is string && data.venueId.size() >= 1 && data.venueId.size() <= 128 &&
+        data.venueName is string && data.venueName.size() >= 1 && data.venueName.size() <= 160 &&
+        data.reviewerName is string && data.reviewerName.size() >= 1 && data.reviewerName.size() <= 120 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        (!('venueFeedback' in data) || (data.venueFeedback is string && data.venueFeedback.size() <= 1500)) &&
+        (!('experienceFeedback' in data) || (data.experienceFeedback is string && data.experienceFeedback.size() <= 1500)) &&
+        data.isVerified == true &&
+        data.isHidden is bool &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
+    function isValidSupportEnquiry(data, enquiryId) {
+      return data.keys().hasAll(['id', 'name', 'email', 'message', 'status', 'createdAtUtc']) &&
+        data.keys().hasOnly(['id', 'name', 'email', 'phone', 'bookingReference', 'message', 'status', 'createdAtUtc']) &&
+        data.id is string && data.id == enquiryId && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 160 &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 40)) &&
+        (!('bookingReference' in data) || (data.bookingReference is string && data.bookingReference.size() <= 30)) &&
+        data.message is string && data.message.size() >= 3 && data.message.size() <= 2000 &&
+        data.status is string && (
+          data.status == 'open' || data.status == 'in_progress' || data.status == 'resolved'
+        ) &&
+        data.createdAtUtc is string && data.createdAtUtc.size() >= 10 && data.createdAtUtc.size() <= 40;
+    }
+
     function isValidAdminMember(data, adminId) {
       return data.keys().hasAll(['uid', 'email', 'staffGroup']) &&
         data.keys().hasOnly(['uid', 'email', 'staffGroup']) &&
@@ -163,8 +444,8 @@ service cloud.firestore {
         (!('facilitySlugs' in data) || (data.facilitySlugs is list && data.facilitySlugs.size() <= 20 && (data.facilitySlugs.size() == 0 || (data.facilitySlugs[0] is string && data.facilitySlugs[0].size() <= 80)))) &&
         (!('occasions' in data) || (data.occasions is list && data.occasions.size() <= 15 && (data.occasions.size() == 0 || (data.occasions[0] is string && data.occasions[0].size() <= 80)))) &&
         (!('bookingTypes' in data) || (data.bookingTypes is list && data.bookingTypes.size() <= 5 && (data.bookingTypes.size() == 0 || (data.bookingTypes[0] is string && data.bookingTypes[0].size() <= 50)))) &&
-        (!('heroImageUrl' in data) || (data.heroImageUrl is string && data.heroImageUrl.size() <= 500)) &&
-        (!('galleryImages' in data) || (data.galleryImages is list && data.galleryImages.size() <= 10 && (data.galleryImages.size() == 0 || (data.galleryImages[0] is string && data.galleryImages[0].size() <= 500)))) &&
+        (!('heroImageUrl' in data) || (data.heroImageUrl is string && data.heroImageUrl.size() <= 4000)) &&
+        (!('galleryImages' in data) || (data.galleryImages is list && data.galleryImages.size() <= 10 && (data.galleryImages.size() == 0 || (data.galleryImages[0] is string && data.galleryImages[0].size() <= 4000)))) &&
         (!('confirmedOfferText' in data) || (data.confirmedOfferText is string && data.confirmedOfferText.size() <= 400)) &&
         (!('ratingAverage' in data) || (data.ratingAverage is number && data.ratingAverage >= 0 && data.ratingAverage <= 5)) &&
         (!('reviewCount' in data) || (data.reviewCount is number && data.reviewCount >= 0)) &&
@@ -258,6 +539,234 @@ service cloud.firestore {
           );
         allow delete: if isValidId(userId) && isValidId(docId) && isSuperuser();
       }
+
+      match /favourites/{favouriteId} {
+        allow get: if isValidId(userId) && isValidId(favouriteId) && (isOwner(userId) || isAdmin()) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow list: if isValidId(userId) && (isOwner(userId) || isBootstrappedSuperuser()) &&
+          resource.data.userId == userId;
+        allow create: if isValidId(userId) && isValidId(favouriteId) &&
+          isOwner(userId) &&
+          isValidFavourite(incoming(), userId, favouriteId) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow update: if false;
+        allow delete: if isValidId(userId) && isValidId(favouriteId) && (isOwner(userId) || isAdmin());
+      }
+
+      match /wallet/{walletDocId} {
+        allow get: if isValidId(userId) && isValidId(walletDocId) && (isOwner(userId) || isAdmin()) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow list: if isValidId(userId) && (isOwner(userId) || isBootstrappedSuperuser()) &&
+          resource.data.userId == userId;
+        allow create: if isValidId(userId) && isValidId(walletDocId) && walletDocId == 'primary' &&
+          (isOwner(userId) || isAdmin()) &&
+          isValidWallet(incoming(), userId, walletDocId) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow update: if isValidId(userId) && isValidId(walletDocId) && walletDocId == 'primary' &&
+          isValidWallet(incoming(), userId, walletDocId) &&
+          exists(/databases/$(database)/documents/users/$(userId)) && (
+            isAdmin() || (
+              isOwner(userId) &&
+              incoming().id == existing().id &&
+              incoming().userId == existing().userId &&
+              incoming().diff(existing()).affectedKeys().hasOnly(['balanceMinor', 'updatedAtUtc'])
+            )
+          );
+        allow delete: if isValidId(userId) && isValidId(walletDocId) && isSuperuser();
+      }
+
+      match /walletTransactions/{txId} {
+        allow get: if isValidId(userId) && isValidId(txId) && (isOwner(userId) || isAdmin()) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow list: if isValidId(userId) && (isOwner(userId) || isBootstrappedSuperuser()) &&
+          resource.data.userId == userId;
+        allow create: if isValidId(userId) && isValidId(txId) &&
+          (isOwner(userId) || isAdmin()) &&
+          isValidWalletTransaction(incoming(), userId, txId) &&
+          exists(/databases/$(database)/documents/users/$(userId));
+        allow update: if isValidId(userId) && isValidId(txId) &&
+          isValidWalletTransaction(incoming(), userId, txId) &&
+          isAdmin() &&
+          incoming().id == existing().id &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+        allow delete: if isValidId(userId) && isValidId(txId) && isSuperuser();
+      }
+    }
+
+    match /bookings/{bookingId} {
+      allow get: if isValidId(bookingId) && (
+        isAdmin() || (
+          isSignedIn() && (
+            existing().userId == request.auth.uid ||
+            (existing().userId == '' && existing().guestEmail == request.auth.token.email.lower())
+          )
+        )
+      );
+      allow list: if isBootstrappedSuperuser() || (
+        isSignedIn() && (
+          resource.data.userId == request.auth.uid ||
+          (resource.data.userId == '' && resource.data.guestEmail == request.auth.token.email.lower())
+        )
+      );
+      allow create: if isValidId(bookingId) && isValidBooking(incoming(), bookingId) &&
+        incoming().status == 'pending' && (
+          (isSignedIn() && incoming().userId == request.auth.uid) ||
+          isAdmin()
+        );
+      allow update: if isValidId(bookingId) && isValidBooking(incoming(), bookingId) && (
+        isAdmin() || (
+          // Action 1: Attach unowned guest booking strictly on verified email match
+          isSignedIn() &&
+          existing().userId == '' &&
+          existing().guestEmail == request.auth.token.email.lower() &&
+          incoming().userId == request.auth.uid &&
+          incoming().id == existing().id &&
+          incoming().reference == existing().reference &&
+          incoming().status == existing().status &&
+          incoming().guestEmail == existing().guestEmail &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['userId'])
+        ) || (
+          // Action 2: Verified owner confirms approved booking after payment
+          isSignedIn() &&
+          existing().userId == request.auth.uid &&
+          existing().status == 'approved' &&
+          incoming().status == 'confirmed' &&
+          incoming().id == existing().id &&
+          incoming().reference == existing().reference &&
+          incoming().userId == existing().userId &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['status'])
+        )
+      );
+      allow delete: if isValidId(bookingId) && isSuperuser();
+
+      match /history/{historyId} {
+        allow get: if isValidId(bookingId) && isValidId(historyId) && (
+          isAdmin() || (
+            isSignedIn() &&
+            exists(/databases/$(database)/documents/bookings/$(bookingId)) &&
+            get(/databases/$(database)/documents/bookings/$(bookingId)).data.userId == request.auth.uid
+          )
+        );
+        allow list: if isValidId(bookingId) && isBootstrappedSuperuser();
+        allow create: if isValidId(bookingId) && isValidId(historyId) &&
+          isValidBookingHistory(incoming(), bookingId, historyId) &&
+          exists(/databases/$(database)/documents/bookings/$(bookingId)) && (
+            isAdmin() || (
+              isSignedIn() &&
+              get(/databases/$(database)/documents/bookings/$(bookingId)).data.userId == request.auth.uid
+            )
+          );
+        allow update: if false;
+        allow delete: if isValidId(bookingId) && isValidId(historyId) && isSuperuser();
+      }
+    }
+
+    match /payments/{paymentId} {
+      allow get: if isValidId(paymentId) && (
+        isAdmin() || (isSignedIn() && existing().userId == request.auth.uid)
+      );
+      allow list: if isBootstrappedSuperuser() || (
+        isSignedIn() && resource.data.userId == request.auth.uid
+      );
+      allow create: if isValidId(paymentId) && isValidPayment(incoming(), paymentId) && (
+        isAdmin() || (isSignedIn() && incoming().userId == request.auth.uid)
+      );
+      allow update: if isValidId(paymentId) && isValidPayment(incoming(), paymentId) && (
+        isAdmin() || (
+          isSignedIn() &&
+          existing().userId == request.auth.uid &&
+          existing().status == 'pending' &&
+          incoming().status == 'succeeded' &&
+          incoming().id == existing().id &&
+          incoming().amountMinor == existing().amountMinor &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['status', 'method'])
+        )
+      );
+      allow delete: if isValidId(paymentId) && isSuperuser();
+    }
+
+    match /invoices/{invoiceId} {
+      allow get: if isValidId(invoiceId) && (
+        isAdmin() || (isSignedIn() && existing().userId == request.auth.uid)
+      );
+      allow list: if isBootstrappedSuperuser() || (
+        isSignedIn() && resource.data.userId == request.auth.uid
+      );
+      allow create: if isValidId(invoiceId) && isValidInvoice(incoming(), invoiceId) && (
+        isAdmin() || (isSignedIn() && incoming().userId == request.auth.uid)
+      );
+      allow update: if isValidId(invoiceId) && isValidInvoice(incoming(), invoiceId) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+      allow delete: if isValidId(invoiceId) && isSuperuser();
+    }
+
+    // Commercial Settlements: STRICTLY ADMIN ONLY — Customers NEVER see these records (Section 9)
+    match /settlements/{bookingId} {
+      allow get: if isValidId(bookingId) && isAdmin();
+      allow list: if isBootstrappedSuperuser();
+      allow create: if isValidId(bookingId) && isAdmin() && isValidSettlement(incoming(), bookingId);
+      allow update: if isValidId(bookingId) && isValidSettlement(incoming(), bookingId) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().bookingId == existing().bookingId &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'customerAmountReceivedMinor', 'venueBillAmountMinor', 'venueBillFileName',
+          'agreedDiscountMinor', 'decompressShareMinor', 'amountPayableToVenueMinor',
+          'amountRetainedMinor', 'settlementStatus', 'settledAtUtc', 'updatedBy', 'updatedAtUtc'
+        ]);
+      allow delete: if isValidId(bookingId) && isSuperuser();
+    }
+
+    match /eventPlanningRequests/{requestId} {
+      allow get: if isValidId(requestId) && (
+        isAdmin() || (isSignedIn() && existing().userId == request.auth.uid)
+      );
+      allow list: if isBootstrappedSuperuser() || (
+        isSignedIn() && resource.data.userId == request.auth.uid
+      );
+      allow create: if isValidId(requestId) && isValidEventRequest(incoming(), requestId) &&
+        incoming().status == 'new' && (
+          isAdmin() || (isSignedIn() && incoming().userId == request.auth.uid)
+        );
+      allow update: if isValidId(requestId) && isValidEventRequest(incoming(), requestId) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'quotedAmountMinor', 'notes']);
+      allow delete: if isValidId(requestId) && isSuperuser();
+    }
+
+    match /reviews/{reviewId} {
+      allow get: if isValidId(reviewId) && (existing().isHidden == false || isAdmin());
+      allow list: if resource.data.isHidden == false || isBootstrappedSuperuser();
+      allow create: if isValidId(reviewId) && isValidReview(incoming(), reviewId) &&
+        incoming().isVerified == true &&
+        incoming().isHidden == false && (
+          isAdmin() || (
+            isSignedIn() &&
+            exists(/databases/$(database)/documents/bookings/$(incoming().bookingId)) &&
+            get(/databases/$(database)/documents/bookings/$(incoming().bookingId)).data.status == 'completed' &&
+            get(/databases/$(database)/documents/bookings/$(incoming().bookingId)).data.userId == request.auth.uid
+          )
+        );
+      allow update: if isValidId(reviewId) && isValidReview(incoming(), reviewId) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['isHidden']);
+      allow delete: if isValidId(reviewId) && isSuperuser();
+    }
+
+    match /supportEnquiries/{enquiryId} {
+      allow get: if isValidId(enquiryId) && isAdmin();
+      allow list: if isBootstrappedSuperuser();
+      allow create: if isValidId(enquiryId) && isValidSupportEnquiry(incoming(), enquiryId) &&
+        incoming().status == 'open' && isSignedIn();
+      allow update: if isValidId(enquiryId) && isValidSupportEnquiry(incoming(), enquiryId) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+      allow delete: if isValidId(enquiryId) && isSuperuser();
     }
 
     match /admins/{adminId} {
