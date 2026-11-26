@@ -1,7 +1,10 @@
 import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const baseUrl = (
+    process.env.APP_URL ||
+    'https://ais-pre-thox63fusy2vqkv5hufdmc-556021110533.europe-west2.run.app'
+  ).replace(/\/$/, '');
 
   return {
     rules: [

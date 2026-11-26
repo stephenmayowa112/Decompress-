@@ -226,6 +226,10 @@ function BookingFormContent({ venueSlug }: { venueSlug: string }) {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
       <nav aria-label="Breadcrumb" className="text-xs sm:text-sm text-brand-navy/70">
+        <Link href="/" className="hover:underline text-brand-teal-text font-medium">
+          Home
+        </Link>{' '}
+        <span aria-hidden="true">·</span>{' '}
         <Link href="/venues" className="hover:underline text-brand-teal-text font-medium">
           Venues
         </Link>{' '}

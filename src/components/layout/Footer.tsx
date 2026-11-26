@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useDecompress } from '@/src/context/DecompressContext';
 
 /**
- * Airy Deep Navy (#123B60) Editorial Footer honoring the Decompress brand palette
- * ("Primary: Deep Navy #123B60 — Brand identity, navigation, headings and footer")
- * and the generous 4-column grid rhythm of the minimal template.
+ * Airy Deep Navy (#123B60) Footer present on every page.
+ * Includes mandatory navigation/legal links, customer care details,
+ * and product attribution to Dreamily Tech Studio.
  */
 export function Footer() {
   const { siteSettings } = useDecompress();
@@ -143,22 +143,29 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-surface-teal/70">
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-surface-teal/70">
           <p>© {new Date().getFullYear()} Decompress. All rights reserved.</p>
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link href="/contact" className="py-1 hover:text-white transition-colors">
-              Contact Us
-            </Link>
-            <Link href="/faq" className="py-1 hover:text-white transition-colors">
-              FAQ
-            </Link>
-            <Link href="/terms" className="py-1 hover:text-white transition-colors">
-              Terms
-            </Link>
-            <Link href="/privacy" className="py-1 hover:text-white transition-colors">
-              Privacy
-            </Link>
-          </div>
+
+          <p className="text-[11px] text-surface-teal/65 text-center sm:text-right leading-relaxed">
+            Built by Dreamily Tech Studio · Project Manager:{' '}
+            <a
+              href="https://www.linkedin.com/in/vivianonwuka?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-surface-teal/90 hover:text-brand-yellow underline decoration-brand-teal/60 underline-offset-2 transition-colors"
+            >
+              Vivian Onwuka
+            </a>{' '}
+            · Developer:{' '}
+            <a
+              href="https://stephenmayowa.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-surface-teal/90 hover:text-brand-yellow underline decoration-brand-teal/60 underline-offset-2 transition-colors"
+            >
+              Stephen Mayowa
+            </a>
+          </p>
         </div>
       </div>
     </footer>

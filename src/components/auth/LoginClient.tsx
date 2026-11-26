@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useDecompress } from '@/src/context/DecompressContext';
 import { BrandButton } from '@/src/components/ui/Button';
 import { getSafeRedirectPath, mapAuthErrorMessage } from '@/src/lib/auth-helpers';
@@ -111,6 +111,15 @@ export function LoginClient() {
 
   return (
     <div className="mx-auto max-w-lg px-4 sm:px-6 py-10 sm:py-14 space-y-6">
+      <div className="text-center">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-navy/70 hover:text-brand-navy transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Back to Home</span>
+        </Link>
+      </div>
       <div className="space-y-2 text-center">
         <p className="text-xs sm:text-sm font-semibold text-brand-teal-text">Member Access</p>
         <h1 className="text-3xl font-bold text-brand-navy">Sign in to Decompress</h1>

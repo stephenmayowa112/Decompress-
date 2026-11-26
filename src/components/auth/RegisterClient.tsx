@@ -12,6 +12,7 @@ import {
   AlertCircle,
   CheckCircle2,
   ShieldCheck,
+  ArrowLeft,
 } from 'lucide-react';
 import { useDecompress } from '@/src/context/DecompressContext';
 import { AccountType } from '@/src/types/domain';
@@ -124,6 +125,15 @@ export function RegisterClient() {
 
   return (
     <div className="mx-auto max-w-xl px-4 sm:px-6 py-10 sm:py-14 space-y-6">
+      <div className="text-center">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-navy/70 hover:text-brand-navy transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Back to Home</span>
+        </Link>
+      </div>
       <div className="space-y-2 text-center">
         <p className="text-xs sm:text-sm font-semibold text-brand-teal-text">
           Personal &amp; Corporate Accounts

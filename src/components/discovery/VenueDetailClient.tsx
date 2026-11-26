@@ -69,6 +69,10 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
     <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="text-xs sm:text-sm text-brand-navy/65">
+        <Link href="/" className="hover:underline text-brand-teal-text font-semibold">
+          Home
+        </Link>{' '}
+        <span aria-hidden="true">·</span>{' '}
         <Link href="/venues" className="hover:underline text-brand-teal-text font-semibold">
           Venues
         </Link>{' '}

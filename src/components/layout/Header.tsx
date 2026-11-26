@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -12,17 +12,25 @@ const NAV_LINKS = [
   { href: '/experiences', label: 'Experiences' },
   { href: '/plan-event', label: 'Plan an Event' },
   { href: '/faq', label: 'FAQ' },
-  { href: '/account', label: 'Account' },
+  { href: '/account', label: 'My Account' },
 ];
 
 /**
- * Airy Minimal Top Navigation Bar inspired by the minimal redesign template,
- * grounded in Decompress Soft White (#F5F8FA), Deep Navy (#123B60) wordmark/links,
- * Vibrant Teal (#13A6A3) interactive highlights, and Coral (#FF704F) primary CTA.
+ * Airy Minimal Top Navigation Bar grounded in Decompress Soft White (#F5F8FA),
+ * Deep Navy (#123B60), Vibrant Teal (#13A6A3), and Golden Yellow (#FFC857).
  */
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileMenuOpen]);
 
   return (
     <header className="sticky top-0 z-40 w-full bg-surface/90 backdrop-blur-md border-b border-brand-navy/8">

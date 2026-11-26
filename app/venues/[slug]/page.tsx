@@ -14,7 +14,7 @@ export async function generateMetadata({
 
   if (!venue) {
     return {
-      title: 'Venue Not Found | Decompress',
+      title: 'Venue Not Found',
       description: 'Discover social experiences and venues across Lagos on Decompress.',
     };
   }
@@ -27,8 +27,11 @@ export async function generateMetadata({
   );
 
   return {
-    title: `${venue.name} | Decompress`,
+    title: venue.name,
     description: `${venue.area}, ${venue.city} · Indicative Budget Range: ${budgetText}. ${venue.description}`,
+    alternates: {
+      canonical: `/venues/${venue.slug}`,
+    },
     openGraph: {
       title: `${venue.name} | Decompress`,
       description: `${venue.area} · Indicative Budget Range: ${budgetText}`,
@@ -44,7 +47,10 @@ export default async function VenueDetailPage({
 }) {
   const { slug } = await params;
   const venue = SEED_VENUES.find((v) => v.slug === slug);
-  const baseUrl = (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const baseUrl = (
+    process.env.APP_URL ||
+    'https://ais-pre-thox63fusy2vqkv5hufdmc-556021110533.europe-west2.run.app'
+  ).replace(/\/$/, '');
 
   const jsonLd = venue
     ? {

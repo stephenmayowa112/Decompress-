@@ -171,15 +171,71 @@ export function HomeClient() {
                 Plan an Event
               </BrandLinkButton>
             </div>
+
+            {/* Instant Search Bar right in hero for fast discovery */}
+            <div className="mt-9 space-y-3.5">
+              <form
+                onSubmit={handleHeroSearchSubmit}
+                className="mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-[640px]"
+              >
+                <div className="relative flex flex-1 items-center rounded-full border border-brand-navy/15 bg-white px-5 min-h-[54px] shadow-[0_8px_28px_rgba(18,59,96,0.06)] focus-within:border-brand-teal focus-within:ring-4 focus-within:ring-brand-teal/15 transition-all">
+                  <Search className="h-4 w-4 text-brand-teal shrink-0" aria-hidden="true" />
+                  <label htmlFor="hero-main-search" className="sr-only">
+                    Search venue name, category, activity or experience such as salsa or karaoke
+                  </label>
+                  <input
+                    id="hero-main-search"
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder='Search "salsa", "karaoke", "Victoria Island", or "rooftop"...'
+                    className="w-full min-w-0 bg-transparent px-3 py-2.5 text-[15px] text-brand-navy placeholder:text-brand-navy/45 focus:outline-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="min-h-[54px] px-8 rounded-full bg-brand-navy text-white text-[15px] font-semibold hover:bg-brand-navy-hover hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,59,96,0.22)] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+                >
+                  Search venues
+                </button>
+              </form>
+
+              {/* Quick popular experience links */}
+              <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 text-xs sm:text-sm text-brand-navy/65">
+                <span className="font-medium text-brand-navy/80">Popular:</span>
+                {['salsa', 'karaoke', 'live-band', 'beach-club', 'bowling', 'day-spa'].map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery(term);
+                      document.getElementById('featured-venues-preview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="py-1 underline decoration-brand-teal/60 underline-offset-4 hover:text-brand-teal-text font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded px-1"
+                  >
+                    {term}
+                  </button>
+                ))}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-brand-coral-text font-semibold hover:underline cursor-pointer px-1"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
           </motion.div>
 
-          {/* Editorial Showcase Frame (Clean 3-Panel Hospitality Mosaic) */}
+          {/* Editorial Showcase Frame (3-Panel Hospitality Mosaic with venue labels) */}
           {showcaseVenues.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}
-              className="mt-12 sm:mt-16 rounded-[28px] overflow-hidden bg-white p-2 sm:p-2.5 shadow-[0_28px_64px_rgba(18,59,96,0.12)] border border-brand-navy/8"
+              className="mt-10 sm:mt-12 rounded-[28px] overflow-hidden bg-white p-2 sm:p-2.5 shadow-[0_28px_64px_rgba(18,59,96,0.12)] border border-brand-navy/8"
             >
               <div className="grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5">
                 {showcaseVenues.map((venue, idx) => {
@@ -207,6 +263,12 @@ export function HomeClient() {
                       ) : (
                         <div className="h-full w-full bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal" />
                       )}
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-navy/85 via-brand-navy/35 to-transparent p-4 text-left">
+                        <p className="text-sm sm:text-base font-bold text-white leading-tight truncate">
+                          {venue.name}
+                        </p>
+                        <p className="text-xs text-surface-teal/90 truncate">{venue.area}</p>
+                      </div>
                     </Link>
                   );
                 })}
@@ -214,7 +276,7 @@ export function HomeClient() {
             </motion.div>
           )}
 
-          {/* Animated Minimal Concierge Journey Strip (Inspired by Template .route) */}
+          {/* Animated Minimal Concierge Journey Strip */}
           <div className="mx-auto mt-7 flex max-w-[680px] items-center justify-center gap-3 sm:gap-5 text-xs sm:text-sm font-semibold text-brand-navy/70">
             <span className="whitespace-nowrap">Discover Venues</span>
             <div className="relative h-[2px] flex-1 dc-route-line" aria-hidden="true">
@@ -229,62 +291,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 2. Centered Minimal Rounded Search Bar (Template #track Section) */}
-      <section className="py-8 sm:py-14">
-        <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <form
-            onSubmit={handleHeroSearchSubmit}
-            className="mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-[640px]"
-          >
-            <div className="relative flex flex-1 items-center rounded-full border border-brand-navy/15 bg-white px-5 min-h-[54px] shadow-[0_8px_28px_rgba(18,59,96,0.05)] focus-within:border-brand-teal focus-within:ring-4 focus-within:ring-brand-teal/15 transition-all">
-              <Search className="h-4 w-4 text-brand-teal shrink-0" aria-hidden="true" />
-              <label htmlFor="hero-main-search" className="sr-only">
-                Search venue name, category, activity or experience such as salsa or karaoke
-              </label>
-              <input
-                id="hero-main-search"
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder='Search "salsa", "karaoke", "Victoria Island", or "rooftop"...'
-                className="w-full min-w-0 bg-transparent px-3 py-2.5 text-[15px] text-brand-navy placeholder:text-brand-navy/45 focus:outline-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="min-h-[54px] px-8 rounded-full bg-brand-navy text-white text-[15px] font-semibold hover:bg-brand-navy-hover hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,59,96,0.22)] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
-            >
-              Search venues
-            </button>
-          </form>
-
-          {/* Quiet popular experience quick-search links */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 text-xs sm:text-sm text-brand-navy/65">
-            <span className="font-medium text-brand-navy/80">Popular:</span>
-            {['salsa', 'karaoke', 'live-band', 'beach-club', 'bowling', 'day-spa'].map((term) => (
-              <button
-                key={term}
-                type="button"
-                onClick={() => setSearchQuery(term)}
-                className="py-1 underline decoration-brand-teal/60 underline-offset-4 hover:text-brand-teal-text font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded px-1"
-              >
-                {term}
-              </button>
-            ))}
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="text-brand-coral-text font-semibold hover:underline cursor-pointer px-1"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Curated Categories Bento (Template #services Light Teal Cards) */}
+      {/* 2. Curated Categories Bento (Template #services Light Teal Cards) */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-12">
@@ -329,9 +336,15 @@ export function HomeClient() {
                 >
                   <button
                     type="button"
-                    onClick={() =>
-                      setSelectedCategory((prev) => (prev === cat.slug ? 'all' : cat.slug))
-                    }
+                    onClick={() => {
+                      const next = isSelected ? 'all' : cat.slug;
+                      setSelectedCategory(next);
+                      if (next !== 'all') {
+                        document
+                          .getElementById('featured-venues-preview')
+                          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}
                     aria-pressed={isSelected}
                     className="text-left cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal rounded-2xl"
                   >
@@ -385,8 +398,8 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 4. Featured & Popular Venues (Live Preview) */}
-      <section className="py-12 sm:py-16 lg:py-20">
+      {/* 3. Featured & Popular Venues (Live Preview) */}
+      <section id="featured-venues-preview" className="py-12 sm:py-16 lg:py-20 scroll-mt-20">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-3 min-w-0">
@@ -409,20 +422,34 @@ export function HomeClient() {
                 a strict minimum spend rule.
               </p>
             </div>
-            <Link
-              href={
-                searchQuery.trim() || selectedCategory !== 'all'
-                  ? `/venues?${new URLSearchParams({
-                      ...(searchQuery.trim() ? { q: searchQuery.trim() } : {}),
-                      ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
-                    }).toString()}`
-                  : '/venues'
-              }
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal-text hover:translate-x-1 transition-transform whitespace-nowrap self-start sm:self-auto"
-            >
-              <span>View all {venues.filter((v) => v.isPublished).length} venues</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-4 self-start sm:self-auto">
+              {(searchQuery.trim() || selectedCategory !== 'all') && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedCategory('all');
+                  }}
+                  className="text-sm font-semibold text-brand-coral-text hover:underline cursor-pointer whitespace-nowrap"
+                >
+                  Clear filter
+                </button>
+              )}
+              <Link
+                href={
+                  searchQuery.trim() || selectedCategory !== 'all'
+                    ? `/venues?${new URLSearchParams({
+                        ...(searchQuery.trim() ? { q: searchQuery.trim() } : {}),
+                        ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
+                      }).toString()}`
+                    : '/venues'
+                }
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal-text hover:translate-x-1 transition-transform whitespace-nowrap"
+              >
+                <span>View all {venues.filter((v) => v.isPublished).length} venues</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
 
           {previewVenues.length > 0 ? (

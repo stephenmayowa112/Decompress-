@@ -2,15 +2,32 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const WINDOW_MS = 10 * 60 * 1000; // 10-minute sliding window
 const MAX_REQUESTS_PER_WINDOW = 12;
+const MAX_TRACKED_BUCKETS = 5_000;
 
 const ipBuckets = new Map<string, number[]>();
 
 function getClientIp(req: NextRequest): string {
   const forwarded = req.headers.get('x-forwarded-for');
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    return forwarded.split(',')[0].trim().slice(0, 64);
   }
-  return req.headers.get('x-real-ip') || 'unknown-client';
+  return (req.headers.get('x-real-ip') || 'unknown-client').slice(0, 64);
+}
+
+function pruneStaleBuckets(now: number) {
+  if (ipBuckets.size < MAX_TRACKED_BUCKETS) return;
+  for (const [key, timestamps] of ipBuckets.entries()) {
+    const active = timestamps.filter((ts) => now - ts < WINDOW_MS);
+    if (active.length === 0) {
+      ipBuckets.delete(key);
+    } else {
+      ipBuckets.set(key, active);
+    }
+  }
+  if (ipBuckets.size >= MAX_TRACKED_BUCKETS) {
+    const oldestKey = ipBuckets.keys().next().value;
+    if (oldestKey) ipBuckets.delete(oldestKey);
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -29,17 +46,28 @@ export async function POST(req: NextRequest) {
     }
 
     const ip = getClientIp(req);
-    const bucketKey = `${ip}:${String(body.formType || 'general').slice(0, 32)}`;
+    const formType = String(body.formType || 'general')
+      .replace(/[^a-zA-Z0-9_-]/g, '')
+      .slice(0, 32);
+    const bucketKey = `${ip}:${formType || 'general'}`;
     const now = Date.now();
+
+    pruneStaleBuckets(now);
+
     const recent = (ipBuckets.get(bucketKey) || []).filter((ts) => now - ts < WINDOW_MS);
 
     if (recent.length >= MAX_REQUESTS_PER_WINDOW) {
+      const oldestInWindow = recent[0] ?? now;
+      const retryAfterSeconds = Math.max(1, Math.ceil((WINDOW_MS - (now - oldestInWindow)) / 1000));
       return NextResponse.json(
         {
           allowed: false,
           error: 'Too many submissions in a short period. Please wait a few minutes and try again.',
         },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { 'Retry-After': String(retryAfterSeconds) },
+        }
       );
     }
 
