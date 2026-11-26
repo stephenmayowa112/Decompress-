@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,13 +27,20 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 w-full bg-surface/90 backdrop-blur-md border-b border-brand-navy/8">
       <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-4 md:gap-8 px-4 sm:px-6 lg:px-8 h-16 sm:h-[74px]">
-        {/* Zone 1: Single clean Deep Navy wordmark */}
+        {/* Zone 1: Decompress logo */}
         <Link
           href="/"
           onClick={() => setMobileMenuOpen(false)}
-          className="text-xl sm:text-[22px] font-bold tracking-[-0.025em] text-brand-navy whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
+          className="relative flex items-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
         >
-          Decompress
+          <Image
+            src="/assets/images/decompress.png"
+            alt="Decompress"
+            width={180}
+            height={96}
+            priority
+            className="h-10 sm:h-12 w-auto"
+          />
         </Link>
 
         {/* Zone 2: 5 clean single-line navigation links */}
