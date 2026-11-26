@@ -59,11 +59,11 @@ export function Header() {
           })}
         </nav>
 
-        {/* Zone 3: Single primary Coral CTA + mobile drawer button */}
+        {/* Zone 3: Single Golden Yellow CTA + mobile drawer button */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/experiences"
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl shadow-[0_6px_18px_rgba(255,112,79,0.22)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,112,79,0.3)] transition-all duration-200 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-lg font-semibold text-brand-navy bg-brand-yellow hover:bg-brand-yellow-hover active:bg-brand-yellow-active rounded-2xl shadow-[0_6px_18px_rgba(255,200,87,0.32)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,200,87,0.44)] transition-all duration-200 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
           >
             Explore Experiences
           </Link>
@@ -109,7 +109,7 @@ export function Header() {
             <Link
               href="/experiences"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center min-h-[50px] px-4 py-3 text-lg font-semibold text-white bg-brand-coral hover:bg-brand-coral-hover active:bg-brand-coral-active rounded-2xl shadow-[0_6px_18px_rgba(255,112,79,0.22)] transition-colors"
+              className="flex w-full items-center justify-center min-h-[50px] px-4 py-3 text-lg font-semibold text-brand-navy bg-brand-yellow hover:bg-brand-yellow-hover active:bg-brand-yellow-active rounded-2xl shadow-[0_6px_18px_rgba(255,200,87,0.32)] transition-colors"
             >
               Explore Experiences
             </Link>

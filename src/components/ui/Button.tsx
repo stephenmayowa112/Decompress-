@@ -4,7 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-export type BrandButtonVariant = 'primary' | 'secondary' | 'alternative' | 'alternativeOnDark';
+export type BrandButtonVariant =
+  | 'primary'
+  | 'highlight'
+  | 'secondary'
+  | 'alternative'
+  | 'alternativeOnDark';
 export type BrandButtonSize = 'lg' | 'md' | 'sm';
 
 const VARIANT_CLASSES: Record<BrandButtonVariant, string> = {
@@ -14,6 +19,11 @@ const VARIANT_CLASSES: Record<BrandButtonVariant, string> = {
    */
   primary:
     'bg-brand-coral text-white hover:bg-brand-coral-hover active:bg-brand-coral-active shadow-[0_8px_20px_rgba(255,112,79,0.22)] hover:shadow-[0_14px_28px_rgba(255,112,79,0.32)] border-2 border-transparent',
+  /**
+   * Golden Yellow action (#FFC857) with high-contrast Deep Navy label (#123B60).
+   */
+  highlight:
+    'bg-brand-yellow text-brand-navy hover:bg-brand-yellow-hover active:bg-brand-yellow-active shadow-[0_8px_20px_rgba(255,200,87,0.32)] hover:shadow-[0_14px_28px_rgba(255,200,87,0.44)] border-2 border-transparent',
   /**
    * Secondary action: Deep Navy fill (#123B60), crisp white semibold label.
    * Matches Decompress button guideline ("Explore Venues").

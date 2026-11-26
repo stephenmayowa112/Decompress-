@@ -159,9 +159,9 @@ export function HomeClient() {
               Decompress handle the booking.
             </p>
 
-            {/* The 3 Signature Brand Action Buttons (Exact Guideline Styling) */}
+            {/* The 3 Signature Brand Action Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 sm:gap-4">
-              <BrandLinkButton href="/experiences" variant="primary" size="lg">
+              <BrandLinkButton href="/experiences" variant="highlight" size="lg">
                 Explore Experiences
               </BrandLinkButton>
               <BrandLinkButton href="/venues" variant="secondary" size="lg">
@@ -222,7 +222,7 @@ export function HomeClient() {
             </div>
             <span className="whitespace-nowrap text-brand-teal-text">Confirm Availability</span>
             <div className="relative hidden sm:block h-[2px] flex-1 dc-route-line" aria-hidden="true">
-              <span className="dc-route-dot absolute -top-1 h-2.5 w-2.5 rounded-full bg-brand-coral" />
+              <span className="dc-route-dot absolute -top-1 h-2.5 w-2.5 rounded-full bg-brand-yellow" />
             </div>
             <span className="hidden sm:inline whitespace-nowrap">Arrive &amp; Enjoy</span>
           </div>
