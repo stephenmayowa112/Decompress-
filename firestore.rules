@@ -792,7 +792,7 @@ service cloud.firestore {
 
     match /locations/{locationId} {
       allow get: if isValidId(locationId);
-      allow list: if resource.data.city is string;
+      allow list: if resource.data.city >= '';
       allow create: if isValidId(locationId) && isAdmin() && isValidLocation(incoming(), locationId);
       allow update: if isValidId(locationId) && isValidLocation(incoming(), locationId) && isAdmin() &&
         incoming().id == existing().id &&
@@ -802,7 +802,7 @@ service cloud.firestore {
 
     match /facilities/{facilityId} {
       allow get: if isValidId(facilityId);
-      allow list: if resource.data.name is string;
+      allow list: if resource.data.name >= '';
       allow create: if isValidId(facilityId) && isAdmin() && isValidFacility(incoming(), facilityId);
       allow update: if isValidId(facilityId) && isValidFacility(incoming(), facilityId) && isAdmin() &&
         incoming().id == existing().id &&
@@ -812,7 +812,7 @@ service cloud.firestore {
 
     match /experienceTags/{tagId} {
       allow get: if isValidId(tagId);
-      allow list: if resource.data.name is string;
+      allow list: if resource.data.name >= '';
       allow create: if isValidId(tagId) && isAdmin() && isValidExperienceTag(incoming(), tagId);
       allow update: if isValidId(tagId) && isValidExperienceTag(incoming(), tagId) && isAdmin() &&
         incoming().id == existing().id &&

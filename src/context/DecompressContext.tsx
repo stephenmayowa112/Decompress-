@@ -819,29 +819,37 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
           setVenues(venueSnap.docs.map((d) => d.data() as Venue));
         }
 
-        const settingsSnap = await getDocs(collection(db, 'siteSettings'));
-        if (active && !settingsSnap.empty) {
-          setSiteSettings(settingsSnap.docs[0].data() as SiteSettings);
+        const settingsSnap = await getDoc(doc(db, 'siteSettings', 'global'));
+        if (active && settingsSnap.exists()) {
+          setSiteSettings(settingsSnap.data() as SiteSettings);
         }
 
-        const catSnap = await getDocs(collection(db, 'categories'));
+        const catSnap = await getDocs(
+          query(collection(db, 'categories'), where('order', '>=', 0))
+        );
         if (active && !catSnap.empty) {
           setCategories(
             catSnap.docs.map((d) => d.data() as Category).sort((a, b) => a.order - b.order)
           );
         }
 
-        const locSnap = await getDocs(collection(db, 'locations'));
+        const locSnap = await getDocs(
+          query(collection(db, 'locations'), where('city', '>=', ''))
+        );
         if (active && !locSnap.empty) {
           setLocations(locSnap.docs.map((d) => d.data() as Location));
         }
 
-        const facSnap = await getDocs(collection(db, 'facilities'));
+        const facSnap = await getDocs(
+          query(collection(db, 'facilities'), where('name', '>=', ''))
+        );
         if (active && !facSnap.empty) {
           setFacilities(facSnap.docs.map((d) => d.data() as Facility));
         }
 
-        const tagSnap = await getDocs(collection(db, 'experienceTags'));
+        const tagSnap = await getDocs(
+          query(collection(db, 'experienceTags'), where('name', '>=', ''))
+        );
         if (active && !tagSnap.empty) {
           setExperienceTags(tagSnap.docs.map((d) => d.data() as ExperienceTag));
         }
