@@ -409,8 +409,14 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
   const [isSeedingFirestore, setIsSeedingFirestore] = useState(false);
   const [firestoreSeedStatus, setFirestoreSeedStatus] = useState<string | null>(null);
 
+  const SUPER_ADMIN_EMAILS = new Set([
+    'stephenmayowa112@gmail.com',
+    'onwukavivian9@gmail.com',
+  ]);
+
   const isAdminUser = Boolean(
-    currentUser?.emailVerified && currentUser?.email === 'stephenmayowa112@gmail.com'
+    currentUser?.emailVerified &&
+      SUPER_ADMIN_EMAILS.has((currentUser.email || '').trim().toLowerCase())
   );
 
   // Persist operational state locally so guest checkouts, reviews, and admin sessions stay seamless
@@ -495,7 +501,10 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     const draft = pendingDraftRef.current;
     const googleLinked = isGoogleLinkedOnUser(user);
     const normalizedEmail = (user.email || '').trim().toLowerCase();
-    const userIsAdmin = user.emailVerified && normalizedEmail === 'stephenmayowa112@gmail.com';
+    const userIsAdmin =
+      user.emailVerified &&
+      (normalizedEmail === 'stephenmayowa112@gmail.com' ||
+        normalizedEmail === 'onwukavivian9@gmail.com');
 
     if (!user.emailVerified) {
       setUserProfile({

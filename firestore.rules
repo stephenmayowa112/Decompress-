@@ -29,7 +29,10 @@ service cloud.firestore {
     }
 
     function isBootstrappedSuperuser() {
-      return isSignedIn() && request.auth.token.email == 'stephenmayowa112@gmail.com';
+      return isSignedIn() && (
+        request.auth.token.email == 'stephenmayowa112@gmail.com' ||
+        request.auth.token.email == 'onwukavivian9@gmail.com'
+      );
     }
 
     function isAdmin() {
