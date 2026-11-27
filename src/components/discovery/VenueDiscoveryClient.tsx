@@ -85,7 +85,7 @@ export function VenueDiscoveryClient() {
 
   const updateFilterPatch = (patch: Partial<VenueSearchFilters>) => {
     const next: VenueSearchFilters = { ...filters, ...patch };
-    // Prune facilities that do not apply to the newly selected category (Section 7.1)
+    // Prune facilities that do not apply to the newly selected category
     if (patch.category !== undefined) {
       const relevant = getRelevantFacilities(facilities, patch.category);
       next.facilities = next.facilities.filter((slug) =>
@@ -675,7 +675,7 @@ export function VenueDiscoveryClient() {
               </div>
             </div>
 
-            {/* Category-Relevant Facilities (Section 7.1) */}
+            {/* Category-Relevant Facilities */}
             <div className="space-y-2.5 pt-2 border-t border-brand-navy/10">
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                 <h2 className="text-xs font-bold text-brand-navy">

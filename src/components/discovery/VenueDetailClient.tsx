@@ -107,7 +107,7 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
               )}
             </div>
 
-            {/* Gallery Thumbnail Switcher (hidden if venue has no extra gallery images - Section 7.2) */}
+            {/* Gallery Thumbnail Switcher */}
             {allPhotos.length > 1 && (
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
                 {allPhotos.map((photoUrl, idx) => (
@@ -245,7 +245,7 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
             </section>
           )}
 
-          {/* Confirmed Offers/Discounts ONLY (Section 7.2 — hidden if empty) */}
+          {/* Confirmed Offers */}
           {venue.confirmedOfferText && (
             <section className="rounded-2xl bg-surface-teal p-5 border border-brand-teal/30 space-y-1.5">
               <p className="text-xs font-bold text-brand-teal-text">Confirmed Decompress Offer</p>
@@ -344,7 +344,7 @@ export function VenueDetailClient({ slug }: VenueDetailClientProps) {
             )}
           </section>
 
-          {/* Ratings & Verified Reviews (hidden if no rating/reviews - Section 7.2) */}
+          {/* Ratings & Verified Reviews */}
           {(venue.ratingAverage > 0 || venue.reviewCount > 0 || venueReviews.length > 0) && (
             <section className="rounded-[28px] bg-white p-6 sm:p-7 border border-brand-navy/8 shadow-[0_8px_28px_rgba(18,59,96,0.05)] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

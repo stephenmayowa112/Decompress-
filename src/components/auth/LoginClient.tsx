@@ -268,7 +268,7 @@ export function LoginClient() {
           <div className="flex-grow border-t border-brand-navy/15" />
         </div>
 
-        {/* 2. Separate Continue with Google Option (Section 7.3) */}
+        {/* 2. Continue with Google Option */}
         <div className="space-y-2.5">
           <BrandButton
             type="button"

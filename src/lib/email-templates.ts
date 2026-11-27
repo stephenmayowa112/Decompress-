@@ -74,8 +74,7 @@ function wrapBrandedHtml(title: string, bodyHtml: string, supportEmail: string):
 }
 
 /**
- * Provider-agnostic transactional email renderer for all 8 V1 lifecycle templates (Section 7.4 & 7.6).
- * Strictly omits invented response-time promises and unconfirmed refund rules.
+ * Provider-agnostic transactional email renderer for booking and event lifecycle notifications.
  */
 export function buildTransactionalEmail(
   template: EmailTemplateKey,

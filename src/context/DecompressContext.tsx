@@ -311,7 +311,7 @@ interface DecompressContextValue {
   syncAndLinkGuestBookings: () => Promise<number>;
   signOutUser: () => Promise<void>;
   syncSeedDataToFirestore: () => Promise<void>;
-  // Milestone 4 — Bookings
+  // Bookings
   submitBookingRequest: (input: SubmitBookingInput) => Promise<{
     booking: Booking;
     eventRequest?: EventPlanningRequest;
@@ -321,22 +321,22 @@ interface DecompressContextValue {
     toStatus: BookingStatus,
     options?: AdminBookingTransitionOptions
   ) => Promise<{ booking: Booking; payment?: Payment }>;
-  // Milestone 5 — Payments, Invoices, Settlements
+  // Payments, Invoices, Settlements
   completePaymentCheckout: (
     guestPayToken: string,
     method: 'guest_checkout_link' | 'wallet' | 'card_sandbox'
   ) => Promise<{ booking: Booking; payment: Payment; invoice: Invoice; duplicate: boolean }>;
   adminSaveSettlement: (bookingId: string, patch: SettlementPatch) => Promise<Settlement>;
-  // Milestone 6 — Event Planning
+  // Event Planning
   submitEventPlanningRequest: (input: SubmitEventRequestInput) => Promise<EventPlanningRequest>;
   adminUpdateEventRequest: (
     requestId: string,
     patch: { status: EventRequestStatus; quotedAmountMinor?: number | null; notes?: string }
   ) => Promise<EventPlanningRequest>;
-  // Milestone 7 — Wallet
+  // Wallet
   fundWallet: (amountMinor: number) => Promise<WalletTransaction>;
   payBookingWithWallet: (bookingId: string) => Promise<{ booking: Booking; invoice: Invoice }>;
-  // Milestone 8 — Reviews, FAQ CMS, Support, Admin Venue & SiteSettings
+  // Reviews, FAQ CMS, Support, Admin Venue & SiteSettings
   submitVerifiedReview: (input: SubmitReviewInput) => Promise<Review>;
   adminToggleReviewHidden: (reviewId: string) => Promise<void>;
   adminSaveFaqItem: (item: FAQItem) => Promise<void>;
@@ -646,7 +646,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
         // Keep local wallet state
       }
 
-      // Link earlier guest bookings strictly on verified email match (Section 7.3)
+      // Link earlier guest bookings strictly on verified email match
       let newlyLinked = 0;
       if (normalizedEmail) {
         // 1. Link matching local guest bookings immediately
@@ -1147,7 +1147,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     await firebaseSignOut(auth);
   }, []);
 
-  // --- Milestone 4: Booking Request Submission ---
+  // --- Booking Request Submission ---
   const submitBookingRequest = useCallback(
     async (input: SubmitBookingInput) => {
       await runGuestGuard('booking_request', input.honeypot);
@@ -1273,7 +1273,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [venues, currentUser, siteSettings.defaultCurrency, recordEmail]
   );
 
-  // --- Milestone 4 & 5: Admin Booking Status Transition ---
+  // --- Admin Booking Status Transition ---
   const adminTransitionBookingStatus = useCallback(
     async (
       bookingId: string,
@@ -1423,7 +1423,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [bookings, currentUser, isAdminUser, siteSettings.guestPaymentMode, recordEmail]
   );
 
-  // --- Milestone 5: Signature-Verified & Idempotent Checkout Completion ---
+  // --- Signature-Verified & Idempotent Checkout Completion ---
   const completePaymentCheckout = useCallback(
     async (
       guestPayToken: string,
@@ -1580,7 +1580,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [payments, bookings, invoices, currentUser, userProfile, isAdminUser, recordEmail]
   );
 
-  // --- Milestone 5: Admin-Only Settlement Tracking (Zero hard-coded formulas) ---
+  // --- Admin-Only Settlement Tracking ---
   const adminSaveSettlement = useCallback(
     async (bookingId: string, patch: SettlementPatch) => {
       const booking = bookings.find((b) => b.id === bookingId);
@@ -1625,7 +1625,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [bookings, currentUser, isAdminUser]
   );
 
-  // --- Milestone 6: Event Planning Requests ---
+  // --- Event Planning Requests ---
   const submitEventPlanningRequest = useCallback(
     async (input: SubmitEventRequestInput) => {
       await runGuestGuard('event_planning_request', input.honeypot);
@@ -1733,7 +1733,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [eventPlanningRequests, isAdminUser, recordEmail]
   );
 
-  // --- Milestone 7: Provider-Backed Wallet Mirror ---
+  // --- Provider-Backed Wallet Mirror ---
   const fundWallet = useCallback(
     async (amountMinor: number) => {
       if (!siteSettings.walletEnabled) {
@@ -1866,7 +1866,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     ]
   );
 
-  // --- Milestone 8: Verified Reviews ---
+  // --- Verified Reviews ---
   const submitVerifiedReview = useCallback(
     async (input: SubmitReviewInput) => {
       const rating = Math.round(Number(input.rating));
@@ -1948,7 +1948,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [reviews, isAdminUser, recalcVenueRating]
   );
 
-  // --- Milestone 8: Live FAQ CMS ---
+  // --- Live FAQ CMS ---
   const adminSaveFaqItem = useCallback(
     async (item: FAQItem) => {
       setFaqItems((prev) => {
@@ -1984,7 +1984,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
     [faqItems, isAdminUser]
   );
 
-  // --- Milestone 8: Public Support Enquiries ---
+  // --- Public Support Enquiries ---
   const submitSupportEnquiry = useCallback(
     async (input: SubmitSupportEnquiryInput) => {
       await runGuestGuard('support_enquiry', input.honeypot);

@@ -114,7 +114,7 @@ export function HomeClient() {
 
   return (
     <div className="overflow-x-clip">
-      {/* 1. Centered Minimal Editorial Hero (Sample Template Rhythm + Decompress Brand Palette) */}
+      {/* 1. Hero Section */}
       <section className="relative pt-14 sm:pt-20 lg:pt-24 pb-10 sm:pb-14">
         {/* Subtle ambient floating gradient blobs & radial dot-grid texture */}
         <div
@@ -291,7 +291,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 2. Curated Categories Bento (Template #services Light Teal Cards) */}
+      {/* 2. Curated Categories */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-12">
@@ -321,7 +321,6 @@ export function HomeClient() {
                 (v) => v.isPublished && v.categorySlugs.includes(cat.slug)
               ).length;
               const isSelected = selectedCategory === cat.slug;
-              // Top 2 featured categories use template's airy 2-column span; next 3 use 3-column; final 2 pair cleanly
               const spanClass =
                 idx < 2 || idx >= 5 ? 'lg:col-span-3' : 'lg:col-span-2';
 
@@ -485,7 +484,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 5. How Decompress Works (Template #how 3-Column Editorial Strip) */}
+      {/* 5. How Decompress Works */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8">
           <div className="space-y-3 mb-12">
@@ -566,7 +565,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 7. Minimal Hairline FAQ Section (Template #faq — strictly published items only) */}
+      {/* 7. FAQ Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
@@ -627,7 +626,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* 8. Full-Width Rounded Deep Navy CTA Card (Template Bottom Banner) */}
+      {/* 8. Event Planning CTA Banner */}
       <section className="pb-6 pt-4">
         <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8">
           <div className="rounded-[32px] bg-brand-navy text-white px-7 py-12 sm:px-14 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-[0_24px_56px_rgba(18,59,96,0.18)]">

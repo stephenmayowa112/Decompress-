@@ -194,7 +194,7 @@ export function AccountShell({ title, subtitle, children }: AccountShellProps) {
         </div>
       </div>
 
-      {/* Email Verification Gate Banner (Never link guest bookings until verified - Section 7.3) */}
+      {/* Email Verification Gate Banner */}
       {!currentUser.emailVerified && (
         <div
           role="status"

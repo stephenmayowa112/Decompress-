@@ -156,7 +156,7 @@ export function RegisterClient() {
           </div>
         )}
 
-        {/* Account Type Selector: Personal vs Corporate (Section 7.3) */}
+        {/* Account Type Selector: Personal vs Corporate */}
         <div className="space-y-2">
           <span className="block text-xs font-semibold text-brand-navy">Account Type</span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

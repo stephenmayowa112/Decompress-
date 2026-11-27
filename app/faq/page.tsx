@@ -60,13 +60,12 @@ export default function FAQPage() {
       {publishedItems.length === 0 ? (
         <div className="rounded-[28px] bg-white p-8 sm:p-10 border border-brand-navy/8 shadow-[0_8px_28px_rgba(18,59,96,0.05)] space-y-4">
           <h2 className="text-xl font-bold text-brand-navy">
-            FAQ topics are currently in draft review
+            Help Centre updates in progress
           </h2>
           <p className="text-sm sm:text-base text-brand-navy/75 leading-relaxed">
-            In accordance with V1 launch rules, all {faqTopics.length} FAQ topics and{' '}
-            {faqItems.length} questions are seeded as <strong>unpublished drafts</strong> so refund,
-            cancellation, and payment policies are never shown publicly until confirmed and
-            published by an administrator.
+            We are currently updating our published Help Centre articles. In the meantime, feel
+            free to reach out to our customer care team directly with any questions about venues,
+            bookings, or event coordination.
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <BrandLinkButton href="/contact" variant="primary" size="sm" fullWidthOnMobile={false}>

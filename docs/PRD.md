@@ -1,6 +1,6 @@
 # DECOMPRESS — Product Requirements & V1 Launch Scope
 
-*Source of truth | Updated working document: 10 November 2026 (with FAQ specification & 22 November 2026 Build Prompt alignment)*
+*Source of truth | Updated working document: 10 November 2026 (including FAQ specification)*
 
 > A platform for discovering social experiences, booking venues and arranging support so customers can spend less time organising and more time enjoying their plans.
 
@@ -24,7 +24,7 @@ The product is intended to make organising a social outing easier. A customer sh
 
 ## 2. V1 Product Direction
 
-V1 is **concierge-style**. The public website collects discovery traffic and booking requests; the Decompress admin team manually confirms availability with venues, tracks payments and fulfils event-planning requests. There is **no live availability** and **no venue-system integration** in V1. Commercial rules, payment-provider arrangements and unresolved operational policies are configurable and tagged `TODO(founder)` until confirmed.
+V1 is **concierge-style**. The public website collects discovery traffic and booking requests; the Decompress admin team manually confirms availability with venues, tracks payments and fulfils event-planning requests. There is **no live availability** and **no venue-system integration** in V1. Commercial rules, payment-provider arrangements and operational policies are configurable via site settings.
 
 ---
 
@@ -116,7 +116,7 @@ Displays available and relevant data only (hiding any empty section):
   3. `Event content creator`
   4. `Coordinator and content-creator package`
 - **Statuses**: `new`, `in_discussion`, `quoted`, `accepted`, `in_progress`, `completed`, `declined`.
-- Supports both a quoted amount per request and an optional fixed price per add-on (`TODO(founder)`).
+- Supports both a quoted amount per request and an optional fixed price per add-on.
 
 ---
 

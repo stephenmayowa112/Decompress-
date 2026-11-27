@@ -1,14 +1,14 @@
 /**
- * Decompress V1 — Core Normalized Domain Models (Section 8)
+ * Decompress — Core Normalized Domain Models
  *
- * Non-negotiable conventions:
- * - All monetary amounts are stored as integer minor units (e.g., kobo for NGN)
+ * Conventions:
+ * - Monetary amounts are stored as integer minor units (e.g., kobo for NGN)
  *   alongside an explicit ISO currency code.
- * - All timestamps are stored in UTC ISO-8601 format and displayed in a configurable
- *   timezone (default 'Africa/Lagos', TODO(founder)).
- * - Always use "Budget Range" (never "Minimum Spend").
- * - No commission rates, discount percentages, deposit percentages, refund rules,
- *   or response-time promises are hard-coded.
+ * - Timestamps are stored in UTC ISO-8601 format and displayed in a configurable
+ *   timezone (default 'Africa/Lagos').
+ * - Always use "Budget Range" for indicative venue guides.
+ * - Commission rates, discount amounts, deposit amounts, and settlement figures
+ *   are configurable rather than hard-coded.
  */
 
 export type AccountType = 'personal' | 'corporate';
@@ -17,7 +17,7 @@ export type StaffGroup = 'Operations' | 'Finance' | 'Content & Support' | 'Super
 
 export type VenueSetting = 'indoor' | 'outdoor' | 'rooftop' | 'beachfront';
 
-export type BudgetBasis = 'per_person' | 'per_table' | 'total'; // TODO(founder): chosen per venue by admin
+export type BudgetBasis = 'per_person' | 'per_table' | 'total';
 
 export type BookingType = 'table' | 'group' | 'private_hire';
 
@@ -43,7 +43,7 @@ export type EventRequestStatus =
   | 'completed'
   | 'declined';
 
-export type GuestPaymentMode = 'guest_checkout' | 'wallet_only'; // TODO(founder)
+export type GuestPaymentMode = 'guest_checkout' | 'wallet_only';
 
 export type PaymentStatus = 'pending' | 'succeeded' | 'failed' | 'refunded' | 'reversed';
 
@@ -104,7 +104,7 @@ export interface Facility {
   id: string;
   name: string;
   slug: string;
-  /** Links each facility strictly to the categories it applies to (Section 7.1) */
+  /** Links each facility to the categories it applies to */
   applicableCategorySlugs: string[];
 }
 
@@ -123,7 +123,7 @@ export interface Offer {
   text: string;
   validFromUtc?: string;
   validUntilUtc?: string;
-  /** Only confirmed offers (isConfirmed === true) may be displayed publicly (Section 7.2) */
+  /** Only confirmed offers (isConfirmed === true) may be displayed publicly */
   isConfirmed: boolean;
 }
 
@@ -180,7 +180,7 @@ export interface Booking {
   specialRequests?: string;
   eventServiceLevel?: EventServiceLevel | null;
   selectedAddOnIds?: string[];
-  /** Admin sets amountDueMinor when approving a booking (TODO(founder): full vs deposit) */
+  /** Admin sets amountDueMinor when approving a booking */
   amountDueMinor?: number | null;
   currency: string;
   cancellationReason?: string;
@@ -238,7 +238,7 @@ export interface Invoice {
 export interface Wallet {
   id: string;
   userId: string;
-  /** Local mirror of fintech-provider wallet balance in minor units (Section 9) */
+  /** Local mirror of payment-provider wallet balance in minor units */
   balanceMinor: number;
   currency: string;
   providerAccountRef: string;
@@ -263,7 +263,7 @@ export interface Settlement {
   id: string;
   bookingId: string;
   bookingReference: string;
-  /** All Settlement fields are free-form editable by admin with zero hard-coded formulas (Section 8 & 9) */
+  /** Settlement fields are editable by Finance/Superuser admins */
   customerAmountReceivedMinor: number;
   venueBillAmountMinor: number;
   venueBillFileName?: string;
@@ -287,7 +287,7 @@ export interface AddOn {
     | 'coordinator_and_content_creator_package';
   name: string;
   description: string;
-  /** Optional fixed price in minor units (TODO(founder): pricing is TO CONFIRM) */
+  /** Optional fixed price in minor units when configured */
   fixedPriceMinor?: number;
   currency: string;
   isOptionalFixedPrice: boolean;
@@ -310,7 +310,7 @@ export interface EventPlanningRequest {
   assistanceNeeded: string;
   selectedAddOnIds: string[];
   status: EventRequestStatus;
-  /** Quoted amount per request set by admin (TODO(founder)) */
+  /** Quoted amount per request set by admin */
   quotedAmountMinor?: number | null;
   notes?: string;
   linkedBookingId?: string | null;
@@ -371,12 +371,12 @@ export interface SupportEnquiry {
 }
 
 export interface SiteSettings {
-  supportEmail: string; // TODO(founder)
-  supportPhone: string; // TODO(founder)
-  supportHours: string; // TODO(founder)
-  guestPaymentMode: GuestPaymentMode; // TODO(founder): default 'guest_checkout'
-  walletEnabled: boolean; // TODO(founder): feature flag
-  defaultCurrency: string; // TODO(founder): default 'NGN'
-  defaultTimezone: string; // TODO(founder): default 'Africa/Lagos'
-  internalResponseTargetMinutes?: number; // TODO(founder): never shown in public UI
+  supportEmail: string;
+  supportPhone: string;
+  supportHours: string;
+  guestPaymentMode: GuestPaymentMode; // default 'guest_checkout'
+  walletEnabled: boolean; // feature flag
+  defaultCurrency: string; // default 'NGN'
+  defaultTimezone: string; // default 'Africa/Lagos'
+  internalResponseTargetMinutes?: number; // never shown in public UI
 }

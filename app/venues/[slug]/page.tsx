@@ -47,10 +47,7 @@ export default async function VenueDetailPage({
 }) {
   const { slug } = await params;
   const venue = SEED_VENUES.find((v) => v.slug === slug);
-  const baseUrl = (
-    process.env.APP_URL ||
-    'https://ais-pre-thox63fusy2vqkv5hufdmc-556021110533.europe-west2.run.app'
-  ).replace(/\/$/, '');
+  const baseUrl = (process.env.APP_URL || 'https://decompress.ng').replace(/\/$/, '');
 
   const jsonLd = venue
     ? {

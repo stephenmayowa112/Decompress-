@@ -40,7 +40,7 @@ export function formatBudgetRange(
 }
 
 /**
- * Format UTC timestamp into the configurable display timezone (default Africa/Lagos, TODO(founder)).
+ * Format UTC timestamp into the configured display timezone (default Africa/Lagos).
  */
 export function formatUtcTimestamp(
   utcIsoString: string,

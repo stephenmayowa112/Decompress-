@@ -356,7 +356,7 @@
     },
     "SiteSettings": {
       "title": "SiteSettings",
-      "description": "Global configurable settings and feature flags (TODO(founder)).",
+      "description": "Global configurable settings and feature flags.",
       "type": "object",
       "properties": {
         "supportEmail": { "type": "string", "maxLength": 160 },

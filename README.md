@@ -1,6 +1,8 @@
-# Decompress V1
+# Decompress
 
 Mobile-first social-experience discovery, concierge venue booking, and event planning platform built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS v4**, and **Firebase (Firestore & Auth)**.
+
+Built by **Dreamily Tech Studio**.
 
 ---
 
@@ -16,41 +18,36 @@ Mobile-first social-experience discovery, concierge venue booking, and event pla
    ```bash
    npm run dev
    ```
-4. **Run automated tests & lint**
+4. **Run automated tests, lint & build**
    ```bash
    npx tsx --test tests/decompress.test.ts
    npm run lint
-   npx eslint firestore.rules DRAFT_firestore.rules
    npm run build
    ```
 
 ---
 
-## Firebase Setup & Email/Password Auth Note
+## Firebase Setup & Auth Configuration
 
-- Firestore database (`ai-studio-4ffb0036-2702-4fdf-9b82-4a2f1a634849`) and hardened `firestore.rules` are provisioned and deployed.
-- **Google Sign-In** is enabled automatically.
-- To enable **Email & Password Sign-In** in production: open your Firebase Console → **Authentication → Sign-in method** → enable **Email/Password**.
-- Sign in with the bootstrapped founder superuser account (`stephenmayowa112@gmail.com`) and open `/admin` → **Venues & Settings** → **Sync Seed Data to Firestore** to push the 18 sample Lagos venues, 7 categories, 8 locations, 10 facilities, 14 experience tags, 4 event add-ons, and 21 unpublished FAQ drafts into Firestore.
+- Configure your Firestore database and deploy `firestore.rules` via Firebase CLI.
+- **Google Sign-In** and **Email/Password Sign-In** can be managed in **Firebase Console → Authentication → Sign-in method**.
+- Sign in with an administrator account and visit `/admin` → **Venues & Settings** to configure site settings, manage venues, and sync initial catalog data.
 
 ---
 
-## V1 Pre-Launch End-to-End Checklist
+## Core Features
 
 - **Discovery & Search (`/`, `/venues`, `/venues/[slug]`, `/experiences`)**:
-  - 18 Lagos venues across 7 categories with indicative **Budget Ranges** (never "Minimum Spend").
-  - Weighted search with typo tolerance (`"salsa"`, `"salza"`), URL-synced filters, category-pruned facilities, and preferred-date pre-fill with explicit non-live-availability copy.
+  - Curated Lagos venues across 7 categories with indicative **Budget Ranges**.
+  - Weighted search with typo tolerance, URL-synced filters, category-filtered facilities, and preferred-date pre-fill.
 - **Guest & Member Bookings (`/book/[venueSlug]`, `/account`)**:
-  - Guest checkout works without forced account creation, protected by server-side honeypot + IP rate limiting (`/api/guest-guard`), generating `DCP-XXXXXX` references.
+  - Guest booking requests supported alongside authenticated Personal and Corporate accounts, with server-side rate limiting (`/api/guest-guard`) and `DCP-XXXXXX` booking references.
   - Verified-email members automatically link earlier guest bookings.
-- **Admin Approvals, Payments, PDF Invoices & Settlements (`/admin`, `/pay/[token]`)**:
-  - Admin approves bookings with confirmed Amount Due, generating tokenised `/pay/[token]` links and branded transactional emails.
-  - Sandbox payment provider verifies HMAC-SHA256 webhooks with idempotency (`/api/payments/webhook`), confirms bookings once, issues downloadable **PDF Invoices**, and unlocks **Admin-Only Commercial Settlements** (free-form editable, zero hard-coded formulas).
+- **Operations, Payments, PDF Invoices & Settlements (`/admin`, `/pay/[token]`)**:
+  - Admin approval flow with tokenised `/pay/[token]` payment links, HMAC-verified webhooks (`/api/payments/webhook`), downloadable **PDF Invoices**, and commercial settlement tracking.
 - **Event Planning (`/plan-event`)**:
-  - 3 service levels & 4 optional add-ons with `EVR-XXXXXX` tracking across all 7 statuses (`new` → `completed`/`declined`).
+  - Three structured service levels and optional creative add-ons with `EVR-XXXXXX` request tracking.
 - **Wallet (`/account/wallet`)**:
-  - Feature-flagged (`siteSettings.walletEnabled`) provider-backed mirror with funding, approved-booking checkout, and transaction history.
-- **Verified Reviews, Live FAQ CMS & Support (`/review/[token]`, `/faq`, `/contact`)**:
-  - One-time Verified reviews tied strictly to `completed` bookings (1–5 golden yellow stars + optional venue & Decompress feedback).
-  - Public `/faq` shows strictly `isPublished === true` items with live Admin CMS publishing and founder-confirmation warnings on refund/cancellation drafts.
-  - Public `/contact` logs support enquiries into `/admin`.
+  - Feature-flagged account wallet supporting top-ups, approved-booking checkout, and transaction history.
+- **Verified Reviews, Help Centre & Support (`/review/[token]`, `/faq`, `/contact`)**:
+  - Verified post-visit reviews tied to completed bookings, live Help Centre CMS management, and customer care enquiry tracking.

@@ -101,10 +101,9 @@ export default function AdminDashboardPage() {
             </p>
           ) : (
             <div className="rounded-2xl bg-white/10 p-3.5 space-y-2 max-w-xs">
-              <p className="font-semibold text-white">Local Sandbox Operations Preview</p>
+              <p className="font-semibold text-white">Preview Mode</p>
               <p className="text-[11px] text-surface-teal/90">
-                Sign in with verified founder admin credentials to persist admin writes to
-                Firestore.
+                Sign in with administrator credentials to manage and save changes to the database.
               </p>
               <BrandLinkButton
                 href="/login?next=/admin"
@@ -210,7 +209,7 @@ export default function AdminDashboardPage() {
           <section className="rounded-2xl bg-white p-5 sm:p-6 border border-brand-navy/15 space-y-4">
             <div className="space-y-1">
               <h2 className="text-lg font-bold text-brand-navy">
-                Transactional Email Dispatch Log (All 8 Brand Templates)
+                Transactional Email Dispatch Log
               </h2>
               <p className="text-xs text-brand-navy/75">
                 Inspect branded Decompress HTML &amp; plain-text notifications triggered by booking

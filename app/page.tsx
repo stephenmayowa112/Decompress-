@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const baseUrl = (
-    process.env.APP_URL ||
-    'https://ais-pre-thox63fusy2vqkv5hufdmc-556021110533.europe-west2.run.app'
-  ).replace(/\/$/, '');
+  const baseUrl = (process.env.APP_URL || 'https://decompress.ng').replace(/\/$/, '');
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',

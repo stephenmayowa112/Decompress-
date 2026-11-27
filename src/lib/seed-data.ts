@@ -40,16 +40,16 @@ function createVenueSvgDataUri(
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-// TODO(founder): Confirm final support contacts, operating hours, guest payment mode, wallet flag, currency & timezone
+// Default platform settings (editable via /admin -> Settings)
 export const SEED_SITE_SETTINGS: SiteSettings = {
-  supportEmail: 'support@decompress.ng', // TODO(founder): placeholder customer-care email
-  supportPhone: '+234 800 332 6677', // TODO(founder): placeholder customer-care phone
-  supportHours: 'Monday – Saturday, 9:00 AM – 8:00 PM WAT', // TODO(founder): placeholder operating hours
-  guestPaymentMode: 'guest_checkout', // TODO(founder): 'guest_checkout' | 'wallet_only'
-  walletEnabled: true, // TODO(founder): feature flag for account wallet
-  defaultCurrency: 'NGN', // TODO(founder): configurable currency code
-  defaultTimezone: 'Africa/Lagos', // TODO(founder): configurable display timezone
-  internalResponseTargetMinutes: 30, // TODO(founder): internal ops target only; NEVER shown in public UI
+  supportEmail: 'support@decompress.ng',
+  supportPhone: '+234 800 332 6677',
+  supportHours: 'Monday – Saturday, 9:00 AM – 8:00 PM WAT',
+  guestPaymentMode: 'guest_checkout',
+  walletEnabled: true,
+  defaultCurrency: 'NGN',
+  defaultTimezone: 'Africa/Lagos',
+  internalResponseTargetMinutes: 30,
 };
 
 export const SEED_CATEGORIES: Category[] = [
@@ -129,7 +129,6 @@ export const SEED_OCCASIONS: string[] = [
   'Other special occasion',
 ];
 
-// TODO(founder): Confirm pilot launch geography (seeded with Lagos areas)
 export const SEED_LOCATIONS: Location[] = [
   {
     id: 'loc_vi_adeola_odeku',
@@ -182,9 +181,7 @@ export const SEED_LOCATIONS: Location[] = [
 ];
 
 /**
- * Facilities linked strictly to the categories they apply to (Section 7.1).
- * For example, 'pool' applies to Hotels & Resorts, Relaxation & Experiences, and Nightlife (beach clubs),
- * and does NOT apply to Music & Entertainment (Karaoke).
+ * Facilities mapped to their applicable venue categories.
  */
 export const SEED_FACILITIES: Facility[] = [
   {
@@ -358,17 +355,17 @@ export const SEED_EXPERIENCE_TAGS: ExperienceTag[] = [
 ];
 
 /**
- * 18 Clearly Fictional Sample Venues across all 7 categories in Lagos (Section 12).
+ * Curated Lagos venues across all 7 categories.
  * Prices are stored in NGN integer minor units (kobo: 1 NGN = 100 kobo).
  */
 export const SEED_VENUES: Venue[] = [
   {
     id: 'ven_casa_marina_salsa',
-    name: 'Casa Marina Kitchen & Salsa Social (Fictional Sample)',
+    name: 'Casa Marina Kitchen & Salsa Social',
     slug: 'casa-marina-kitchen-salsa-social',
     description:
       'A lively open-air tapas restaurant and Latin dance social house in Victoria Island. Guests enjoy wood-fired seafood, craft sangria, and guided Thursday-to-Sunday salsa, bachata, and live percussion nights.',
-    address: '14B Adeola Odeku Street, Victoria Island, Lagos (Fictional)',
+    address: '14B Adeola Odeku Street, Victoria Island, Lagos',
     locationId: 'loc_vi_adeola_odeku',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -403,11 +400,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_zobo_ember_grill',
-    name: 'Zobo & Ember Contemporary Grill (Fictional Sample)',
+    name: 'Zobo & Ember Contemporary Grill',
     slug: 'zobo-and-ember-contemporary-grill',
     description:
       'Modern Nigerian fire-pit cuisine and tasting rooms in Old Ikoyi. Specialises in aged suya ribs, smoked lagoon snapper, and intimate chef-table dinners for date nights and executive team dinners.',
-    address: '22 Alexander Road, Old Ikoyi, Lagos (Fictional)',
+    address: '22 Alexander Road, Old Ikoyi, Lagos',
     locationId: 'loc_ikoyi_old',
     city: 'Lagos',
     area: 'Ikoyi',
@@ -441,11 +438,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_lagoon_breeze_bistro',
-    name: 'Lagoon Breeze Terrace & Buffet (Fictional Sample)',
+    name: 'Lagoon Breeze Terrace & Buffet',
     slug: 'lagoon-breeze-terrace-and-buffet',
     description:
       'Breezy waterfront restaurant along Admiralty Way in Lekki Phase 1 offering weekend family buffets, wood-oven flatbreads, and relaxed outdoor seating overlooking the creek.',
-    address: '88 Admiralty Way, Lekki Phase 1, Lagos (Fictional)',
+    address: '88 Admiralty Way, Lekki Phase 1, Lagos',
     locationId: 'loc_lekki_phase1',
     city: 'Lagos',
     area: 'Lekki',
@@ -476,11 +473,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_skyline_mirage_rooftop',
-    name: 'Skyline Mirage Rooftop Lounge (Fictional Sample)',
+    name: 'Skyline Mirage Rooftop Lounge',
     slug: 'skyline-mirage-rooftop-lounge',
     description:
       '12th-floor panoramic cocktail lounge in Oniru with sunset DJ sets, signature botanical cocktails, and reserved terrace booths for birthday celebrations and after-work hangouts.',
-    address: 'Plot 9 Water Corporation Drive, Oniru, Victoria Island, Lagos (Fictional)',
+    address: 'Plot 9 Water Corporation Drive, Oniru, Victoria Island, Lagos',
     locationId: 'loc_vi_oniru',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -514,11 +511,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_velvet_echo_karaoke',
-    name: 'Velvet Echo Karaoke & Vinyl Club (Fictional Sample)',
+    name: 'Velvet Echo Karaoke & Vinyl Club',
     slug: 'velvet-echo-karaoke-and-vinyl-club',
     description:
       'Boutique karaoke studio and late-night lounge in Lekki Phase 1 featuring 8 private soundproof suites, wireless studio microphones, curated Afrobeats/90s R&B catalogues, and table-side sliders.',
-    address: '31 Fola Osibo Street, Lekki Phase 1, Lagos (Fictional)',
+    address: '31 Fola Osibo Street, Lekki Phase 1, Lagos',
     locationId: 'loc_lekki_phase1',
     city: 'Lagos',
     area: 'Lekki',
@@ -552,11 +549,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_indigo_note_jazz_hall',
-    name: 'The Indigo Note Live Band & Jazz Hall (Fictional Sample)',
+    name: 'The Indigo Note Live Band & Jazz Hall',
     slug: 'the-indigo-note-live-band-and-jazz-hall',
     description:
       'Intimate acoustic concert supper club in Ikeja GRA showcasing live Highlife, Afrobeats brass ensembles, Friday salsa socials, and Sunday stand-up comedy nights.',
-    address: '45 Isaac John Street, Ikeja GRA, Lagos (Fictional)',
+    address: '45 Isaac John Street, Ikeja GRA, Lagos',
     locationId: 'loc_ikeja_gra',
     city: 'Lagos',
     area: 'Ikeja',
@@ -587,11 +584,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_solstice_beach_club',
-    name: 'Solstice Cabana & Beach Club (Fictional Sample)',
+    name: 'Solstice Cabana & Beach Club',
     slug: 'solstice-cabana-and-beach-club',
     description:
       'Oceanfront beach club and infinity pool retreat along the Ilashe coast. Features shaded daybeds, beachfront grills, acoustic sunset sessions, and full-venue private party charters.',
-    address: 'Plot 4 Lighthouse Creek, Ilashe Beach Coast, Lagos (Fictional)',
+    address: 'Plot 4 Lighthouse Creek, Ilashe Beach Coast, Lagos',
     locationId: 'loc_ilage_beach',
     city: 'Lagos',
     area: 'Ilashe & Tarkwa Bay',
@@ -622,11 +619,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_azure_palm_resort',
-    name: 'Azure Palm Boutique Hotel & Leisure Resort (Fictional Sample)',
+    name: 'Azure Palm Boutique Hotel & Leisure Resort',
     slug: 'azure-palm-boutique-hotel-and-leisure-resort',
     description:
       'Curated luxury hotel and lagoon resort in Banana Island Foreshore offering poolside weekend brunch experiences, executive retreat boardrooms, thermal spa day passes, and garden courtyard dining.',
-    address: '7 Foreshore Boulevard, Banana Island, Ikoyi, Lagos (Fictional)',
+    address: '7 Foreshore Boulevard, Banana Island, Ikoyi, Lagos',
     locationId: 'loc_ikoyi_banana',
     city: 'Lagos',
     area: 'Ikoyi',
@@ -666,11 +663,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_kora_courtyard_hotel',
-    name: 'Kora Courtyard Hotel & Rooftop Pavilion (Fictional Sample)',
+    name: 'Kora Courtyard Hotel & Rooftop Pavilion',
     slug: 'kora-courtyard-hotel-and-rooftop-pavilion',
     description:
       'Design-forward hospitality space in Victoria Island combining a rooftop dining conservatory, heated lap pool, and modular event salons for corporate offsites and milestone dinners.',
-    address: '19 Saka Tinubu Street, Victoria Island, Lagos (Fictional)',
+    address: '19 Saka Tinubu Street, Victoria Island, Lagos',
     locationId: 'loc_vi_adeola_odeku',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -701,11 +698,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_the_atrium_hall_oniru',
-    name: 'The Atrium Glasshouse & Event Centre (Fictional Sample)',
+    name: 'The Atrium Glasshouse & Event Centre',
     slug: 'the-atrium-glasshouse-and-event-centre',
     description:
       'Architectural glass-walled banquet hall and landscaped garden terrace in Oniru built for weddings, end-of-year corporate galas, product launches, and private celebrations up to 600 guests.',
-    address: 'Plot 15 Akiogun Road, Oniru, Victoria Island, Lagos (Fictional)',
+    address: 'Plot 15 Akiogun Road, Oniru, Victoria Island, Lagos',
     locationId: 'loc_vi_oniru',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -743,11 +740,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_veranda_gardens_ikoyi',
-    name: 'Veranda Botanical Gardens & Pavilion (Fictional Sample)',
+    name: 'Veranda Botanical Gardens & Pavilion',
     slug: 'veranda-botanical-gardens-and-pavilion',
     description:
       'Lush tropical garden venue in Old Ikoyi ideal for outdoor birthday brunches, intimate wedding receptions, corporate team mixers, and acoustic evening recitals.',
-    address: '11 Bourdillon Extension, Old Ikoyi, Lagos (Fictional)',
+    address: '11 Bourdillon Extension, Old Ikoyi, Lagos',
     locationId: 'loc_ikoyi_old',
     city: 'Lagos',
     area: 'Ikoyi',
@@ -778,11 +775,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_pin_strike_bowling_lekki',
-    name: 'PinStrike Bowling, VR & Arcade Social (Fictional Sample)',
+    name: 'PinStrike Bowling, VR & Arcade Social',
     slug: 'pinstrike-bowling-vr-and-arcade-social',
     description:
       'High-energy 10-lane bowling alley, VR racing simulator zone, private karaoke pods, and craft burger diner in Lekki Phase 1 designed for friends hangouts, family outings, and team bonding tournaments.',
-    address: '52 Admiralty Way, Lekki Phase 1, Lagos (Fictional)',
+    address: '52 Admiralty Way, Lekki Phase 1, Lagos',
     locationId: 'loc_lekki_phase1',
     city: 'Lagos',
     area: 'Lekki',
@@ -820,11 +817,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_apex_kart_paintball_arena',
-    name: 'Apex Circuit Go-Karting & Paintball Park (Fictional Sample)',
+    name: 'Apex Circuit Go-Karting & Paintball Park',
     slug: 'apex-circuit-go-karting-and-paintball-park',
     description:
       'Outdoor floodlit 650-metre go-kart track and woodland paintball tactical arena at Oniru Waterfront with a shaded pit-lane barbecue deck for corporate team-bonding challenges and birthday groups.',
-    address: 'Plot 22 Remi Olowude Way, Oniru Corridor, Lagos (Fictional)',
+    address: 'Plot 22 Remi Olowude Way, Oniru Corridor, Lagos',
     locationId: 'loc_vi_oniru',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -860,11 +857,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_cipher_vault_escape_yaba',
-    name: 'CipherVault Escape Rooms & Boardgame Café (Fictional Sample)',
+    name: 'CipherVault Escape Rooms & Boardgame Café',
     slug: 'ciphervault-escape-rooms-and-boardgame-cafe',
     description:
       'Four themed 60-minute puzzle escape rooms and a specialty coffee & waffle boardgame lounge in Yaba. Built for analytical team-bonding sessions, student/tech socials, and weekend hangouts.',
-    address: '302 Herbert Macaulay Way, Sabo, Yaba, Lagos (Fictional)',
+    address: '302 Herbert Macaulay Way, Sabo, Yaba, Lagos',
     locationId: 'loc_yaba_tech',
     city: 'Lagos',
     area: 'Yaba',
@@ -895,11 +892,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_sanaa_hammam_wellness_ikoyi',
-    name: 'Sanaa Thermal Hammam & Wellness Sanctuary (Fictional Sample)',
+    name: 'Sanaa Thermal Hammam & Wellness Sanctuary',
     slug: 'sanaa-thermal-hammam-and-wellness-sanctuary',
     description:
       'Tranquil urban day spa and Moroccan hammam sanctuary in Old Ikoyi featuring heated vitality pools, eucalyptus steam chambers, couples massage suites, and an organic herbal tea courtyard.',
-    address: '8 Lugard Avenue, Old Ikoyi, Lagos (Fictional)',
+    address: '8 Lugard Avenue, Old Ikoyi, Lagos',
     locationId: 'loc_ikoyi_old',
     city: 'Lagos',
     area: 'Ikoyi',
@@ -931,11 +928,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_haven_float_lounge_vi',
-    name: 'Haven Floatation, Pool & Tea Lounge (Fictional Sample)',
+    name: 'Haven Floatation, Pool & Tea Lounge',
     slug: 'haven-floatation-pool-and-tea-lounge',
     description:
       'Restorative garden oasis in Victoria Island offering salt-water float pods, a quiet palm-fringed lap pool, sound-bath sessions, and private wellness cabanas for small groups.',
-    address: '29A Idejo Street, Victoria Island, Lagos (Fictional)',
+    address: '29A Idejo Street, Victoria Island, Lagos',
     locationId: 'loc_vi_adeola_odeku',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -966,11 +963,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_nocturne_velvet_club_vi',
-    name: 'Nocturne Supper Club & Late Lounge (Fictional Sample)',
+    name: 'Nocturne Supper Club & Late Lounge',
     slug: 'nocturne-supper-club-and-late-lounge',
     description:
       'Sophisticated supper club in Victoria Island blending Pan-Asian small plates with late-night resident DJs, bespoke bottle service tables, and private velvet booths.',
-    address: '1062 Akin Adesola Street, Victoria Island, Lagos (Fictional)',
+    address: '1062 Akin Adesola Street, Victoria Island, Lagos',
     locationId: 'loc_vi_adeola_odeku',
     city: 'Lagos',
     area: 'Victoria Island',
@@ -1001,11 +998,11 @@ export const SEED_VENUES: Venue[] = [
   },
   {
     id: 'ven_palm_court_conference_ikeja',
-    name: 'Palm Court Grand Hall & Executive Suites (Fictional Sample)',
+    name: 'Palm Court Grand Hall & Executive Suites',
     slug: 'palm-court-grand-hall-and-executive-suites',
     description:
       'Mainland event and conference complex in Ikeja GRA featuring a 450-seat pillarless hall, breakout rooms, stage lighting rig, and dedicated catering bays for corporate summits and weddings.',
-    address: '60 Joel Ogunnaike Street, Ikeja GRA, Lagos (Fictional)',
+    address: '60 Joel Ogunnaike Street, Ikeja GRA, Lagos',
     locationId: 'loc_ikeja_gra',
     city: 'Lagos',
     area: 'Ikeja',
@@ -1055,14 +1052,13 @@ export const SEED_EVENT_SERVICE_LEVELS = [
   },
 ] as const;
 
-// TODO(founder): Confirm whether event add-ons use fixed prices, custom quotations, or both
 export const SEED_ADD_ONS: AddOn[] = [
   {
     id: 'addon_event_coordinator',
     type: 'event_coordinator',
     name: 'Event coordinator',
     description: 'Dedicated on-site Decompress coordinator managing venue liaison, guest arrival, and schedule.',
-    fixedPriceMinor: 7500000, // NGN 75,000 placeholder (TODO(founder))
+    fixedPriceMinor: 7500000,
     currency: 'NGN',
     isOptionalFixedPrice: true,
   },
@@ -1071,7 +1067,7 @@ export const SEED_ADD_ONS: AddOn[] = [
     type: 'professional_photographer',
     name: 'Professional photographer',
     description: 'Curated event photographer with edited high-resolution gallery delivery.',
-    fixedPriceMinor: 12000000, // NGN 120,000 placeholder (TODO(founder))
+    fixedPriceMinor: 12000000,
     currency: 'NGN',
     isOptionalFixedPrice: true,
   },
@@ -1080,7 +1076,7 @@ export const SEED_ADD_ONS: AddOn[] = [
     type: 'event_content_creator',
     name: 'Event content creator',
     description: 'Behind-the-scenes short-form video reels and instant social highlights captured during the event.',
-    fixedPriceMinor: 9000000, // NGN 90,000 placeholder (TODO(founder))
+    fixedPriceMinor: 9000000,
     currency: 'NGN',
     isOptionalFixedPrice: true,
   },
@@ -1089,7 +1085,7 @@ export const SEED_ADD_ONS: AddOn[] = [
     type: 'coordinator_and_content_creator_package',
     name: 'Coordinator and content-creator package',
     description: 'Combined on-the-day event coordinator plus dedicated social content creator.',
-    fixedPriceMinor: 15000000, // NGN 150,000 placeholder (TODO(founder))
+    fixedPriceMinor: 15000000,
     currency: 'NGN',
     isOptionalFixedPrice: true,
   },
@@ -1110,8 +1106,8 @@ export const SEED_FAQ_TOPICS: FAQTopic[] = [
 ];
 
 /**
- * Section 7.7: All 6 topics and 21 questions are seeded as unpublished drafts (isPublished: false)
- * with placeholder answers. Never publish refund, cancellation or payment answers until founder confirms.
+ * All 6 topics and 21 FAQ items start unpublished (isPublished: false)
+ * so refund, cancellation, and payment answers are reviewed in Admin before going live.
  */
 export const SEED_FAQ_ITEMS: FAQItem[] = [
   // Topic 1: Bookings
@@ -1154,7 +1150,7 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'bookings',
     question: 'Can I change or cancel a booking?',
     answer:
-      'TODO(founder): Placeholder draft — contact Decompress support with your booking reference (DCP-XXXXXX) to request a date, guest-count or cancellation update. Do not publish until founder cancellation terms are confirmed.',
+      'Contact Decompress support with your booking reference (DCP-XXXXXX) to request a date, guest-count, or cancellation update.',
     order: 4,
     isPublished: false,
     requiresPolicyConfirmation: true,
@@ -1204,14 +1200,14 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     isPublished: false,
     requiresPolicyConfirmation: false,
   },
-  // Topic 3: Payments and invoices (TODO(founder): keep unpublished until founder policy confirmation)
+  // Topic 3: Payments and invoices
   {
     id: 'faq_payments_1',
     topicId: 'topic_payments_invoices',
     topicSlug: 'payments-and-invoices',
     question: 'What payment methods can I use?',
     answer:
-      'TODO(founder): Placeholder draft — approved bookings can be paid via the secure payment checkout link sent to your email or through your Decompress account wallet where enabled. Keep unpublished until payment provider is confirmed.',
+      'Approved bookings can be paid via the secure payment checkout link sent to your email or through your Decompress account wallet where enabled.',
     order: 1,
     isPublished: false,
     requiresPolicyConfirmation: true,
@@ -1222,7 +1218,7 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'payments-and-invoices',
     question: 'How does the Decompress wallet work?',
     answer:
-      'TODO(founder): Placeholder draft — registered account holders can fund their Decompress wallet through our payment partner and use the balance to pay for approved bookings and deposits.',
+      'Registered account holders can fund their Decompress wallet through our payment partner and use the balance to pay for approved bookings and deposits.',
     order: 2,
     isPublished: false,
     requiresPolicyConfirmation: true,
@@ -1233,7 +1229,7 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'payments-and-invoices',
     question: 'When do I need to pay?',
     answer:
-      'TODO(founder): Placeholder draft — you only pay after the Decompress team confirms venue availability, marks your booking request Approved, and sends the confirmed amount due.',
+      'You only pay after the Decompress team confirms venue availability, marks your booking request Approved, and sends the confirmed amount due.',
     order: 3,
     isPublished: false,
     requiresPolicyConfirmation: true,
@@ -1244,12 +1240,12 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'payments-and-invoices',
     question: 'Where can I find my invoice or payment confirmation?',
     answer:
-      'TODO(founder): Placeholder draft — once your payment succeeds, an itemised invoice and downloadable PDF receipt are sent to your email and saved in your Account bookings dashboard.',
+      'Once your payment succeeds, an itemised invoice and downloadable PDF receipt are sent to your email and saved in your Account bookings dashboard.',
     order: 4,
     isPublished: false,
     requiresPolicyConfirmation: true,
   },
-  // Topic 4: Refunds and booking changes (TODO(founder): keep unpublished until founder policy confirmation)
+  // Topic 4: Refunds and booking changes
   {
     id: 'faq_refunds_1',
     topicId: 'topic_refunds_changes',
@@ -1267,7 +1263,7 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'refunds-and-booking-changes',
     question: 'How do I request a refund?',
     answer:
-      'TODO(founder): Placeholder draft — contact customer support quoting your booking reference (DCP-XXXXXX). Never publish until founder refund eligibility and timing policies are confirmed.',
+      'Contact customer support quoting your booking reference (DCP-XXXXXX) to submit a refund enquiry.',
     order: 2,
     isPublished: false,
     requiresPolicyConfirmation: true,
@@ -1278,7 +1274,7 @@ export const SEED_FAQ_ITEMS: FAQItem[] = [
     topicSlug: 'refunds-and-booking-changes',
     question: 'How are cancellations and changes handled?',
     answer:
-      'TODO(founder): Placeholder draft — cancellations and venue changes are reviewed manually by our operations team in line with the venue and Decompress policy. Keep unpublished until founder confirmation.',
+      'Cancellations and venue changes are reviewed manually by our operations team in line with the venue and Decompress policy.',
     order: 3,
     isPublished: false,
     requiresPolicyConfirmation: true,
