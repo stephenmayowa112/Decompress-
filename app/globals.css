@@ -16,9 +16,14 @@
   /* Accessible warm accent text on light backgrounds */
   --color-brand-coral-text: #B8371A;
 
-  --color-brand-yellow: #FFC857;
-  --color-brand-yellow-hover: #F2B83B;
-  --color-brand-yellow-active: #E0A629;
+  --color-brand-gold: #D8A31E;
+  --color-brand-gold-light: #EBC558;
+  --color-brand-gold-hover: #C49012;
+  --color-brand-gold-active: #AC7D0D;
+
+  --color-brand-yellow: #DAA520;
+  --color-brand-yellow-hover: #C69214;
+  --color-brand-yellow-active: #B07F0E;
   --color-brand-yellow-text: #7A5400;
 
   --color-surface: #F5F8FA;

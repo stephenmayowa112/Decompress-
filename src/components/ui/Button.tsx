@@ -20,10 +20,10 @@ const VARIANT_CLASSES: Record<BrandButtonVariant, string> = {
   primary:
     'bg-brand-coral text-white hover:bg-brand-coral-hover active:bg-brand-coral-active shadow-[0_8px_20px_rgba(255,112,79,0.22)] hover:shadow-[0_14px_28px_rgba(255,112,79,0.32)] border-2 border-transparent',
   /**
-   * Golden Yellow action (#FFC857) with high-contrast Deep Navy label (#123B60).
+   * Rich Golden action (#D8A31E gradient) with high-contrast Deep Navy label (#123B60).
    */
   highlight:
-    'bg-brand-yellow text-brand-navy hover:bg-brand-yellow-hover active:bg-brand-yellow-active shadow-[0_8px_20px_rgba(255,200,87,0.32)] hover:shadow-[0_14px_28px_rgba(255,200,87,0.44)] border-2 border-transparent',
+    'bg-gradient-to-b from-[#EBC558] via-[#D8A31E] to-[#C28D12] text-brand-navy hover:from-[#F0CD68] hover:via-[#DFAC26] hover:to-[#CA9415] active:from-[#C99517] active:to-[#B5820D] shadow-[0_8px_20px_rgba(194,141,18,0.34)] hover:shadow-[0_14px_28px_rgba(194,141,18,0.46)] border border-[#F4D97E]/70',
   /**
    * Secondary action: Deep Navy fill (#123B60), crisp white semibold label.
    * Matches Decompress button guideline ("Explore Venues").

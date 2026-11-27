@@ -76,10 +76,14 @@ export function HomeClient() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const showcaseVenues = useMemo(
-    () => venues.filter((v) => v.isPublished && v.heroImageUrl).slice(0, 3),
-    [venues]
-  );
+  const showcaseVenues = useMemo(() => {
+    const featured = venues.filter((v) => v.isPublished && v.isFeatured && v.heroImageUrl);
+    return (
+      featured.length >= 3
+        ? featured
+        : venues.filter((v) => v.isPublished && v.heroImageUrl)
+    ).slice(0, 3);
+  }, [venues]);
 
   const previewVenues = useMemo(() => {
     const trimmed = searchQuery.trim();

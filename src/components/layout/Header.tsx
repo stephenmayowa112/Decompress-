@@ -79,7 +79,7 @@ export function Header() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/experiences"
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-lg font-semibold text-brand-navy bg-brand-yellow hover:bg-brand-yellow-hover active:bg-brand-yellow-active rounded-2xl shadow-[0_6px_18px_rgba(255,200,87,0.32)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,200,87,0.44)] transition-all duration-200 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-lg font-semibold text-brand-navy bg-gradient-to-b from-[#EBC558] via-[#D8A31E] to-[#C28D12] hover:from-[#F0CD68] hover:via-[#DFAC26] hover:to-[#CA9415] active:from-[#C99517] active:to-[#B5820D] border border-[#F4D97E]/70 rounded-2xl shadow-[0_6px_18px_rgba(194,141,18,0.34)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(194,141,18,0.46)] transition-all duration-200 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
           >
             Explore Experiences
           </Link>
@@ -125,7 +125,7 @@ export function Header() {
             <Link
               href="/experiences"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex w-full items-center justify-center min-h-[50px] px-4 py-3 text-lg font-semibold text-brand-navy bg-brand-yellow hover:bg-brand-yellow-hover active:bg-brand-yellow-active rounded-2xl shadow-[0_6px_18px_rgba(255,200,87,0.32)] transition-colors"
+              className="flex w-full items-center justify-center min-h-[50px] px-4 py-3 text-lg font-semibold text-brand-navy bg-gradient-to-b from-[#EBC558] via-[#D8A31E] to-[#C28D12] hover:from-[#F0CD68] hover:via-[#DFAC26] hover:to-[#CA9415] active:from-[#C99517] active:to-[#B5820D] border border-[#F4D97E]/70 rounded-2xl shadow-[0_6px_18px_rgba(194,141,18,0.34)] transition-all"
             >
               Explore Experiences
             </Link>

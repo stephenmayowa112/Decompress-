@@ -242,6 +242,27 @@ function mergeById<T extends { id: string }>(primary: T[], secondary: T[]): T[] 
   return Array.from(map.values());
 }
 
+function upgradeLegacyVenueImages(list: Venue[]): Venue[] {
+  const seedById = new Map(SEED_VENUES.map((v) => [v.id, v]));
+  return list.map((venue) => {
+    const seed = seedById.get(venue.id);
+    if (!seed) return venue;
+    const isLegacyHero = !venue.heroImageUrl || venue.heroImageUrl.startsWith('data:image/svg+xml');
+    const hasLegacyGallery = (venue.galleryImages || []).some((img) =>
+      img.startsWith('data:image/svg+xml')
+    );
+    if (!isLegacyHero && !hasLegacyGallery) return venue;
+    return {
+      ...venue,
+      heroImageUrl: isLegacyHero ? seed.heroImageUrl : venue.heroImageUrl,
+      galleryImages:
+        hasLegacyGallery || (venue.galleryImages || []).length === 0
+          ? seed.galleryImages
+          : venue.galleryImages,
+    };
+  });
+}
+
 function stripUndefined<T extends Record<string, unknown>>(obj: T): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, val] of Object.entries(obj)) {
@@ -807,7 +828,9 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
         if (Array.isArray(local.supportEnquiries)) setSupportEnquiries(local.supportEnquiries);
         if (Array.isArray(local.emailLogs)) setEmailLogs(local.emailLogs);
         if (Array.isArray(local.faqItems) && local.faqItems.length > 0) setFaqItems(local.faqItems);
-        if (Array.isArray(local.venues) && local.venues.length > 0) setVenues(local.venues);
+        if (Array.isArray(local.venues) && local.venues.length > 0) {
+          setVenues(upgradeLegacyVenueImages(local.venues));
+        }
         if (local.siteSettings) setSiteSettings(local.siteSettings);
       }
       opsHydratedRef.current = true;
@@ -816,7 +839,7 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
         const venuesQuery = query(collection(db, 'venues'), where('isPublished', '==', true));
         const venueSnap = await getDocs(venuesQuery);
         if (active && !venueSnap.empty) {
-          setVenues(venueSnap.docs.map((d) => d.data() as Venue));
+          setVenues(upgradeLegacyVenueImages(venueSnap.docs.map((d) => d.data() as Venue)));
         }
 
         const settingsSnap = await getDoc(doc(db, 'siteSettings', 'global'));

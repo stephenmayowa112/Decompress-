@@ -10,35 +10,13 @@ import {
   Venue,
 } from '@/src/types/domain';
 
-/**
- * Generates an inline SVG data URI illustration in Decompress brand colours
- * so venue cards and galleries render with zero external URL dependencies.
- */
-function createVenueSvgDataUri(
-  title: string,
-  subtitle: string,
-  accentHex: string,
-  secondaryHex: string
-): string {
-  const safeTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const safeSubtitle = subtitle.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
-    <defs>
-      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#123B60" />
-        <stop offset="60%" stop-color="${secondaryHex}" />
-        <stop offset="100%" stop-color="${accentHex}" />
-      </linearGradient>
-    </defs>
-    <rect width="800" height="500" fill="url(#bg)" />
-    <circle cx="680" cy="110" r="140" fill="#FFC857" fill-opacity="0.16" />
-    <circle cx="140" cy="420" r="190" fill="#13A6A3" fill-opacity="0.22" />
-    <rect x="48" y="310" width="704" height="142" rx="20" fill="#123B60" fill-opacity="0.76" />
-    <text x="76" y="368" fill="#FFFFFF" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="30" font-weight="700">${safeTitle}</text>
-    <text x="76" y="408" fill="#E7F5F3" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="18" font-weight="500">${safeSubtitle}</text>
-  </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
+// High-resolution local hospitality photographs for venue cards & galleries
+const VENUE_PHOTO_SALSA_COURTYARD = '/assets/images/venues/salsa-courtyard.jpg';
+const VENUE_PHOTO_FINE_DINING = '/assets/images/venues/fine-dining.jpg';
+const VENUE_PHOTO_ROOFTOP_LOUNGE = '/assets/images/venues/rooftop-lounge.jpg';
+const VENUE_PHOTO_BEACH_RESORT = '/assets/images/venues/beach-resort.jpg';
+const VENUE_PHOTO_BOWLING_LOUNGE = '/assets/images/venues/bowling-lounge.jpg';
+const VENUE_PHOTO_GLASSHOUSE_PAVILION = '/assets/images/venues/glasshouse-pavilion.jpg';
 
 // Default platform settings (editable via /admin -> Settings)
 export const SEED_SITE_SETTINGS: SiteSettings = {
@@ -382,16 +360,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'live-music', 'dance-floor', 'private-room'],
     occasions: ['Date night', 'Birthday celebration', "Friends' hangout", 'Corporate hangout and team bonding'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Casa Marina Kitchen & Salsa Social',
-      'Victoria Island · Salsa, Tapas & Live Percussion',
-      '#FF704F',
-      '#13A6A3'
-    ),
-    galleryImages: [
-      createVenueSvgDataUri('Casa Marina Courtyard', 'Open-Air Salsa Dance Floor', '#FF704F', '#123B60'),
-      createVenueSvgDataUri('Casa Marina Private Mezzanine', 'Group Dining & Sangria Bar', '#13A6A3', '#123B60'),
-    ],
+    heroImageUrl: VENUE_PHOTO_SALSA_COURTYARD,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE, VENUE_PHOTO_FINE_DINING],
     confirmedOfferText: 'Complimentary 30-minute salsa intro session for group bookings of 8+ guests on Thursdays.',
     ratingAverage: 4.9,
     reviewCount: 24,
@@ -421,15 +391,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'wi-fi'],
     occasions: ['Date night', 'Team dinner', 'Birthday celebration', 'Private event'],
     bookingTypes: ['table', 'group'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Zobo & Ember Contemporary Grill',
-      'Old Ikoyi · Modern Nigerian Fire-Pit Fine Dining',
-      '#123B60',
-      '#FF704F'
-    ),
-    galleryImages: [
-      createVenueSvgDataUri('Zobo & Ember Chef Table', '14-Seat Private Dining Vault', '#123B60', '#13A6A3'),
-    ],
+    heroImageUrl: VENUE_PHOTO_FINE_DINING,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE, VENUE_PHOTO_SALSA_COURTYARD],
     confirmedOfferText: 'Confirmed Decompress Welcome Mocktail Pairing for confirmed table reservations.',
     ratingAverage: 4.8,
     reviewCount: 31,
@@ -459,13 +422,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'wi-fi', 'live-music'],
     occasions: ['Family outing', 'Birthday celebration', "Friends' hangout", 'Office celebration'],
     bookingTypes: ['table', 'group'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Lagoon Breeze Terrace & Buffet',
-      'Lekki Phase 1 · Waterfront Family & Group Dining',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_SALSA_COURTYARD,
+    galleryImages: [VENUE_PHOTO_BEACH_RESORT],
     ratingAverage: 4.6,
     reviewCount: 19,
     isFeatured: false,
@@ -494,15 +452,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'dance-floor', 'live-music'],
     occasions: ['Birthday celebration', "Friends' hangout", 'Date night', 'Office celebration'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Skyline Mirage Rooftop Lounge',
-      'Oniru Waterfront · 12th-Floor Sunset Lounge & DJ Sets',
-      '#123B60',
-      '#13A6A3'
-    ),
-    galleryImages: [
-      createVenueSvgDataUri('Skyline Mirage Sunset Deck', 'Panoramic Atlantic View Booths', '#FF704F', '#123B60'),
-    ],
+    heroImageUrl: VENUE_PHOTO_ROOFTOP_LOUNGE,
+    galleryImages: [VENUE_PHOTO_SALSA_COURTYARD, VENUE_PHOTO_FINE_DINING],
     confirmedOfferText: 'Priority terrace seating for Decompress group bookings before 8:00 PM.',
     ratingAverage: 4.7,
     reviewCount: 28,
@@ -532,15 +483,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'karaoke-booths'],
     occasions: ['Birthday celebration', "Friends' hangout", 'Corporate hangout and team bonding', 'Office celebration'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Velvet Echo Karaoke & Vinyl Club',
-      'Lekki Phase 1 · Private Soundproof Karaoke Suites',
-      '#FF704F',
-      '#123B60'
-    ),
-    galleryImages: [
-      createVenueSvgDataUri('Velvet Echo VIP Suite 1', '18-Guest Private Karaoke Room', '#13A6A3', '#123B60'),
-    ],
+    heroImageUrl: VENUE_PHOTO_BOWLING_LOUNGE,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE],
     confirmedOfferText: '1 extra complimentary studio hour on weekday private booth bookings.',
     ratingAverage: 4.9,
     reviewCount: 36,
@@ -570,13 +514,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'live-music', 'dance-floor', 'av-projector'],
     occasions: ['Date night', 'Birthday celebration', 'Team dinner', "Friends' hangout"],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'The Indigo Note Live Band & Jazz Hall',
-      'Ikeja GRA · Highlife, Salsa & Live Comedy Supper Club',
-      '#123B60',
-      '#13A6A3'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_SALSA_COURTYARD,
+    galleryImages: [VENUE_PHOTO_FINE_DINING],
     ratingAverage: 4.8,
     reviewCount: 22,
     isFeatured: false,
@@ -605,13 +544,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['pool', 'private-room', 'live-music', 'dance-floor'],
     occasions: ['Birthday celebration', "Friends' hangout", 'Company outing', 'Private event'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Solstice Cabana & Beach Club',
-      'Ilashe Coast · Beachfront Cabanas & Infinity Pool',
-      '#13A6A3',
-      '#FF704F'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BEACH_RESORT,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE, VENUE_PHOTO_SALSA_COURTYARD],
     ratingAverage: 4.8,
     reviewCount: 27,
     isFeatured: true,
@@ -646,15 +580,8 @@ export const SEED_VENUES: Venue[] = [
       'Wedding celebration',
     ],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Azure Palm Boutique Hotel & Leisure Resort',
-      'Banana Island · Lagoon Pool Brunch, Spa & Retreats',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [
-      createVenueSvgDataUri('Azure Palm Lagoon Deck', 'Cabanas & Sunday Brunch Lawn', '#13A6A3', '#123B60'),
-    ],
+    heroImageUrl: VENUE_PHOTO_BEACH_RESORT,
+    galleryImages: [VENUE_PHOTO_GLASSHOUSE_PAVILION, VENUE_PHOTO_FINE_DINING],
     confirmedOfferText: 'Includes complimentary poolside towel & welcome sorbet on day-experience bookings.',
     ratingAverage: 4.9,
     reviewCount: 41,
@@ -684,13 +611,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['pool', 'parking', 'private-room', 'wi-fi', 'av-projector'],
     occasions: ['Team dinner', 'Company outing', 'Office celebration', 'End-of-year event'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Kora Courtyard Hotel & Rooftop Pavilion',
-      'Victoria Island · Rooftop Conservatory & Event Salons',
-      '#123B60',
-      '#13A6A3'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_ROOFTOP_LOUNGE,
+    galleryImages: [VENUE_PHOTO_GLASSHOUSE_PAVILION],
     ratingAverage: 4.7,
     reviewCount: 16,
     isFeatured: false,
@@ -725,13 +647,8 @@ export const SEED_VENUES: Venue[] = [
       'Other special occasion',
     ],
     bookingTypes: ['group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'The Atrium Glasshouse & Event Centre',
-      'Oniru · Architectural Banquet Hall & Garden Terrace',
-      '#123B60',
-      '#FF704F'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_GLASSHOUSE_PAVILION,
+    galleryImages: [VENUE_PHOTO_FINE_DINING],
     confirmedOfferText: 'Dedicated bridal/VIP holding suite included with all full-venue bookings.',
     ratingAverage: 4.9,
     reviewCount: 18,
@@ -761,13 +678,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'live-music', 'dance-floor', 'av-projector'],
     occasions: ['Wedding celebration', 'Birthday celebration', 'Company outing', 'Private event'],
     bookingTypes: ['group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Veranda Botanical Gardens & Pavilion',
-      'Old Ikoyi · Open-Air Garden Receptions & Pavilions',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_GLASSHOUSE_PAVILION,
+    galleryImages: [VENUE_PHOTO_SALSA_COURTYARD],
     ratingAverage: 4.8,
     reviewCount: 14,
     isFeatured: false,
@@ -802,13 +714,8 @@ export const SEED_VENUES: Venue[] = [
       'Office celebration',
     ],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'PinStrike Bowling, VR & Arcade Social',
-      'Lekki Phase 1 · 10-Lane Bowling, VR & Karaoke Pods',
-      '#FF704F',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BOWLING_LOUNGE,
+    galleryImages: [VENUE_PHOTO_SALSA_COURTYARD],
     confirmedOfferText: 'Includes complimentary shoe hire and 20 arcade tokens per guest on group bookings.',
     ratingAverage: 4.8,
     reviewCount: 45,
@@ -843,13 +750,8 @@ export const SEED_VENUES: Venue[] = [
       'Company outing',
     ],
     bookingTypes: ['group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Apex Circuit Go-Karting & Paintball Park',
-      'Oniru · Floodlit Karting Circuit & Tactical Paintball',
-      '#123B60',
-      '#FF704F'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BOWLING_LOUNGE,
+    galleryImages: [VENUE_PHOTO_BEACH_RESORT],
     ratingAverage: 4.7,
     reviewCount: 33,
     isFeatured: false,
@@ -878,13 +780,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'wi-fi', 'private-room'],
     occasions: ['Corporate hangout and team bonding', "Friends' hangout", 'Birthday celebration', 'Date night'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'CipherVault Escape Rooms & Boardgame Café',
-      'Yaba · 4 Immersive Escape Rooms & Boardgame Lounge',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BOWLING_LOUNGE,
+    galleryImages: [VENUE_PHOTO_FINE_DINING],
     ratingAverage: 4.9,
     reviewCount: 29,
     isFeatured: false,
@@ -913,13 +810,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['pool', 'parking', 'private-room', 'wi-fi', 'spa-suite'],
     occasions: ['Date night', 'Birthday celebration', "Friends' hangout", 'Private event'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Sanaa Thermal Hammam & Wellness Sanctuary',
-      'Old Ikoyi · Vitality Pool, Hammam & Couples Spa Suites',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BEACH_RESORT,
+    galleryImages: [VENUE_PHOTO_GLASSHOUSE_PAVILION],
     confirmedOfferText: 'Complimentary hibiscus & lemongrass wellness infusion after every group spa circuit.',
     ratingAverage: 4.9,
     reviewCount: 38,
@@ -949,13 +841,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['pool', 'parking', 'private-room', 'wi-fi', 'spa-suite'],
     occasions: ['Date night', "Friends' hangout", 'Birthday celebration', 'Other special occasion'],
     bookingTypes: ['table', 'group'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Haven Floatation, Pool & Tea Lounge',
-      'Victoria Island · Float Pods, Quiet Pool & Wellness Cabanas',
-      '#13A6A3',
-      '#123B60'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_BEACH_RESORT,
+    galleryImages: [VENUE_PHOTO_SALSA_COURTYARD],
     ratingAverage: 4.8,
     reviewCount: 21,
     isFeatured: false,
@@ -984,13 +871,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'dance-floor'],
     occasions: ['Birthday celebration', "Friends' hangout", 'End-of-year event', 'Private event'],
     bookingTypes: ['table', 'group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Nocturne Supper Club & Late Lounge',
-      'Victoria Island · Pan-Asian Supper Club & Late Lounge',
-      '#123B60',
-      '#FF704F'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_FINE_DINING,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE],
     ratingAverage: 4.7,
     reviewCount: 25,
     isFeatured: false,
@@ -1019,13 +901,8 @@ export const SEED_VENUES: Venue[] = [
     facilitySlugs: ['parking', 'private-room', 'wi-fi', 'av-projector', 'dance-floor'],
     occasions: ['Company outing', 'End-of-year event', 'Wedding celebration', 'Office celebration'],
     bookingTypes: ['group', 'private_hire'],
-    heroImageUrl: createVenueSvgDataUri(
-      'Palm Court Grand Hall & Executive Suites',
-      'Ikeja GRA · 450-Seat Pillarless Event & Summit Hall',
-      '#123B60',
-      '#13A6A3'
-    ),
-    galleryImages: [],
+    heroImageUrl: VENUE_PHOTO_GLASSHOUSE_PAVILION,
+    galleryImages: [VENUE_PHOTO_ROOFTOP_LOUNGE],
     ratingAverage: 4.7,
     reviewCount: 15,
     isFeatured: false,

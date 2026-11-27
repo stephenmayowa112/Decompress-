@@ -16,7 +16,8 @@ export interface VenueCardProps {
 }
 
 export function VenueCard({ venue, prefillDate }: VenueCardProps) {
-  const [imgError, setImgError] = useState(false);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const imgError = failedImageUrl === venue.heroImageUrl;
 
   const categoryNames = venue.categorySlugs
     .map((slug) => SEED_CATEGORIES.find((c) => c.slug === slug)?.name || slug)
@@ -39,15 +40,22 @@ export function VenueCard({ venue, prefillDate }: VenueCardProps) {
           className="relative block h-full w-full focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
         >
           {!imgError && venue.heroImageUrl ? (
-            <Image
-              src={venue.heroImageUrl}
-              alt={venue.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              referrerPolicy="no-referrer"
-              onError={() => setImgError(true)}
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-            />
+            <>
+              <Image
+                key={venue.heroImageUrl}
+                src={venue.heroImageUrl}
+                alt={venue.name}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                referrerPolicy="no-referrer"
+                onError={() => setFailedImageUrl(venue.heroImageUrl)}
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-brand-navy/35 to-transparent"
+              />
+            </>
           ) : (
             <div className="flex h-full w-full flex-col justify-end bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal p-5 text-white">
               <p className="text-lg font-bold">{venue.name}</p>
