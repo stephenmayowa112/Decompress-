@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   Search,
   Utensils,
@@ -16,12 +16,17 @@ import {
   Sparkles,
   ArrowRight,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
 } from 'lucide-react';
 import { useDecompress } from '@/src/context/DecompressContext';
 import { BrandButton, BrandLinkButton } from '@/src/components/ui/Button';
 import { VenueCard } from '@/src/components/ui/VenueCard';
 import { SEED_OCCASIONS } from '@/src/lib/seed-data';
 import { DEFAULT_VENUE_FILTERS, filterAndSortVenues } from '@/src/lib/search';
+import { Venue } from '@/src/types/domain';
 
 const CATEGORY_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Utensils,
@@ -60,14 +65,39 @@ const HOW_IT_WORKS_STEPS = [
   },
 ];
 
+function buildHeroSlides(venues: Venue[]): Venue[] {
+  const published = venues.filter((v) => v.isPublished && v.heroImageUrl);
+  const prioritized = [
+    ...published.filter((v) => v.isFeatured),
+    ...published.filter((v) => !v.isFeatured),
+  ];
+  const seenImages = new Set<string>();
+  const uniqueSlides: Venue[] = [];
+  for (const venue of prioritized) {
+    if (!seenImages.has(venue.heroImageUrl)) {
+      seenImages.add(venue.heroImageUrl);
+      uniqueSlides.push(venue);
+    }
+    if (uniqueSlides.length >= 6) break;
+  }
+  return uniqueSlides.length > 0 ? uniqueSlides : published.slice(0, 6);
+}
+
 export function HomeClient() {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
   const { venues, categories, faqItems } = useDecompress();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [failedHeroIds, setFailedHeroIds] = useState<Record<string, boolean>>({});
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [isSlideshowPaused, setIsSlideshowPaused] = useState(false);
+
+  const heroSlides = useMemo(() => buildHeroSlides(venues), [venues]);
+  const slideCount = heroSlides.length;
+  const activeSlideIndex = slideCount > 0 ? slideIndex % slideCount : 0;
+  const activeSlide = heroSlides[activeSlideIndex] || null;
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -76,14 +106,13 @@ export function HomeClient() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const showcaseVenues = useMemo(() => {
-    const featured = venues.filter((v) => v.isPublished && v.isFeatured && v.heroImageUrl);
-    return (
-      featured.length >= 3
-        ? featured
-        : venues.filter((v) => v.isPublished && v.heroImageUrl)
-    ).slice(0, 3);
-  }, [venues]);
+  useEffect(() => {
+    if (isSlideshowPaused || slideCount <= 1) return;
+    const timer = window.setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % slideCount);
+    }, 5500);
+    return () => window.clearInterval(timer);
+  }, [isSlideshowPaused, slideCount]);
 
   const previewVenues = useMemo(() => {
     const trimmed = searchQuery.trim();
@@ -118,27 +147,50 @@ export function HomeClient() {
 
   return (
     <div className="overflow-x-clip">
-      {/* 1. Hero Section */}
-      <section className="relative pt-14 sm:pt-20 lg:pt-24 pb-10 sm:pb-14">
-        {/* Subtle ambient floating gradient blobs & radial dot-grid texture */}
-        <div
-          aria-hidden="true"
-          className="dc-hero-blob pointer-events-none absolute -top-10 left-[4%] h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-brand-teal/20 blur-[80px]"
-        />
-        <div
-          aria-hidden="true"
-          className="dc-hero-blob-delayed pointer-events-none absolute top-28 right-[4%] h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-brand-yellow/20 blur-[80px]"
-        />
-        <div aria-hidden="true" className="dc-hero-dots pointer-events-none absolute inset-0" />
+      {/* 1. Full-Bleed Venue Slideshow Hero Section */}
+      <section className="relative min-h-[620px] sm:min-h-[670px] lg:min-h-[720px] flex flex-col justify-between overflow-hidden bg-brand-navy">
+        {/* Background Crossfading Venue Slideshow */}
+        <div aria-hidden="true" className="absolute inset-0 z-0 overflow-hidden bg-brand-navy">
+          <AnimatePresence initial={false} mode="sync">
+            {activeSlide && (
+              <motion.div
+                key={activeSlide.id}
+                initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 1.07 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  opacity: { duration: 1.05, ease: 'easeInOut' },
+                  scale: { duration: 6, ease: 'easeOut' },
+                }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={activeSlide.heroImageUrl}
+                  alt=""
+                  fill
+                  priority={activeSlideIndex === 0}
+                  sizes="100vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <div className="relative z-10 mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 text-center">
+          {/* Measured Multi-Layer Navy Scrim for High WCAG AA+ Legibility Across All Venues */}
+          <div className="absolute inset-0 bg-brand-navy/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/75 via-brand-navy/45 to-brand-navy/90" />
+        </div>
+
+        {/* Main Hero Foreground Content */}
+        <div className="relative z-10 mx-auto w-full max-w-[1120px] px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 lg:pt-24 pb-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
             className="mx-auto max-w-[880px]"
           >
-            <h1 className="text-[clamp(2.45rem,6vw,4.85rem)] font-bold leading-[1.04] tracking-[-0.035em] text-brand-navy">
+            <h1 className="text-[clamp(2.45rem,6vw,4.85rem)] font-bold leading-[1.04] tracking-[-0.035em] text-white drop-shadow-[0_4px_24px_rgba(9,24,42,0.45)]">
               <span className="block min-h-[1.12em] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -147,19 +199,19 @@ export function HomeClient() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -14 }}
                     transition={{ duration: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
-                    className="inline-block text-brand-teal"
+                    className="inline-block text-[#63E6DC]"
                   >
                     {HERO_PHRASES[phraseIndex]}
                   </motion.span>
                 </AnimatePresence>
               </span>
-              <span className="block text-brand-navy">made effortless.</span>
+              <span className="block text-white">made effortless.</span>
             </h1>
 
-            <p className="mx-auto mt-6 mb-9 max-w-[560px] text-base sm:text-lg lg:text-[19px] leading-relaxed text-brand-navy/75">
+            <p className="mx-auto mt-6 mb-9 max-w-[580px] text-base sm:text-lg lg:text-[19px] leading-relaxed text-white/90 drop-shadow-[0_2px_12px_rgba(9,24,42,0.45)]">
               Discover curated restaurants, rooftop lounges, salsa nights, beach clubs, and event
               spaces across Lagos. Compare indicative{' '}
-              <strong className="font-semibold text-brand-navy">Budget Ranges</strong> and let
+              <strong className="font-semibold text-white">Budget Ranges</strong> and let
               Decompress handle the booking.
             </p>
 
@@ -168,10 +220,20 @@ export function HomeClient() {
               <BrandLinkButton href="/experiences" variant="highlight" size="lg">
                 Explore Experiences
               </BrandLinkButton>
-              <BrandLinkButton href="/venues" variant="secondary" size="lg">
+              <BrandLinkButton
+                href="/venues"
+                variant="secondary"
+                size="lg"
+                className="bg-brand-navy/85 backdrop-blur-sm border-white/25 hover:bg-brand-navy"
+              >
                 Explore Venues
               </BrandLinkButton>
-              <BrandLinkButton href="/plan-event" variant="alternative" size="lg">
+              <BrandLinkButton
+                href="/plan-event"
+                variant="alternativeOnDark"
+                size="lg"
+                className="bg-brand-navy/35 backdrop-blur-sm"
+              >
                 Plan an Event
               </BrandLinkButton>
             </div>
@@ -180,9 +242,9 @@ export function HomeClient() {
             <div className="mt-9 space-y-3.5">
               <form
                 onSubmit={handleHeroSearchSubmit}
-                className="mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-[640px]"
+                className="mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-[660px]"
               >
-                <div className="relative flex flex-1 items-center rounded-full border border-brand-navy/15 bg-white px-5 min-h-[54px] shadow-[0_8px_28px_rgba(18,59,96,0.06)] focus-within:border-brand-teal focus-within:ring-4 focus-within:ring-brand-teal/15 transition-all">
+                <div className="relative flex flex-1 items-center rounded-full border border-white/25 bg-white/95 backdrop-blur-md px-5 min-h-[54px] shadow-[0_14px_38px_rgba(8,22,38,0.32)] focus-within:border-brand-teal focus-within:ring-4 focus-within:ring-brand-teal/25 transition-all">
                   <Search className="h-4 w-4 text-brand-teal shrink-0" aria-hidden="true" />
                   <label htmlFor="hero-main-search" className="sr-only">
                     Search venue name, category, activity or experience such as salsa or karaoke
@@ -193,20 +255,20 @@ export function HomeClient() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder='Search "salsa", "karaoke", "Victoria Island", or "rooftop"...'
-                    className="w-full min-w-0 bg-transparent px-3 py-2.5 text-[15px] text-brand-navy placeholder:text-brand-navy/45 focus:outline-none"
+                    className="w-full min-w-0 bg-transparent px-3 py-2.5 text-[15px] text-brand-navy placeholder:text-brand-navy/50 focus:outline-none"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="min-h-[54px] px-8 rounded-full bg-brand-navy text-white text-[15px] font-semibold hover:bg-brand-navy-hover hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(18,59,96,0.22)] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal"
+                  className="min-h-[54px] px-8 rounded-full bg-brand-teal text-white text-[15px] font-semibold hover:bg-[#109390] hover:-translate-y-0.5 shadow-[0_12px_28px_rgba(8,22,38,0.28)] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white"
                 >
                   Search venues
                 </button>
               </form>
 
               {/* Quick popular experience links */}
-              <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 text-xs sm:text-sm text-brand-navy/65">
-                <span className="font-medium text-brand-navy/80">Popular:</span>
+              <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1.5 text-xs sm:text-sm text-white/85">
+                <span className="font-semibold text-white">Popular:</span>
                 {['salsa', 'karaoke', 'live-band', 'beach-club', 'bowling', 'day-spa'].map((term) => (
                   <button
                     key={term}
@@ -215,7 +277,7 @@ export function HomeClient() {
                       setSearchQuery(term);
                       document.getElementById('featured-venues-preview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="py-1 underline decoration-brand-teal/60 underline-offset-4 hover:text-brand-teal-text font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded px-1"
+                    className="py-1 underline decoration-[#EBC558]/80 underline-offset-4 hover:text-[#EBC558] font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded px-1"
                   >
                     {term}
                   </button>
@@ -224,7 +286,7 @@ export function HomeClient() {
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="text-brand-coral-text font-semibold hover:underline cursor-pointer px-1"
+                    className="text-[#FF9B85] font-semibold hover:underline cursor-pointer px-1"
                   >
                     Clear
                   </button>
@@ -232,68 +294,111 @@ export function HomeClient() {
               </div>
             </div>
           </motion.div>
+        </div>
 
-          {/* Editorial Showcase Frame (3-Panel Hospitality Mosaic with venue labels) */}
-          {showcaseVenues.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}
-              className="mt-10 sm:mt-12 rounded-[28px] overflow-hidden bg-white p-2 sm:p-2.5 shadow-[0_28px_64px_rgba(18,59,96,0.12)] border border-brand-navy/8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5">
-                {showcaseVenues.map((venue, idx) => {
-                  const colClass = idx === 0 ? 'md:col-span-6' : 'md:col-span-3';
-                  const hasFailed = Boolean(failedHeroIds[venue.id]);
-                  return (
-                    <Link
-                      key={venue.id}
-                      href={`/venues/${venue.slug}`}
-                      className={`${colClass} group relative aspect-[16/10] md:aspect-auto md:h-[300px] lg:h-[340px] rounded-[20px] overflow-hidden bg-brand-navy block focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand-teal`}
+        {/* Bottom Active Venue Caption & Interactive Slide Controls */}
+        {activeSlide && (
+          <div className="relative z-10 w-full border-t border-white/12 bg-brand-navy/45 backdrop-blur-md">
+            <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <Link
+                href={`/venues/${activeSlide.slug}`}
+                className="group flex items-center gap-3 text-left min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-white group-hover:text-[#EBC558] transition-colors truncate">
+                    {activeSlide.name}
+                  </p>
+                  <p className="text-xs text-surface-teal/85 truncate">
+                    {activeSlide.area} · {activeSlide.neighbourhood}
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-[#EBC558] shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+
+              {slideCount > 1 && (
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                  {/* Slide Progress Segments */}
+                  <div className="flex items-center gap-1.5" role="tablist" aria-label="Featured venue slides">
+                    {heroSlides.map((slide, idx) => {
+                      const isActive = idx === activeSlideIndex;
+                      return (
+                        <button
+                          key={slide.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={isActive}
+                          aria-label={`Show ${slide.name}`}
+                          onClick={() => setSlideIndex(idx)}
+                          className="group py-2 px-0.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal rounded"
+                        >
+                          <span
+                            className={`block h-1.5 rounded-full transition-all duration-300 ${
+                              isActive
+                                ? 'w-7 bg-[#EBC558]'
+                                : 'w-2.5 bg-white/40 group-hover:bg-white/70'
+                            }`}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Prev / Pause / Next Controls */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSlideIndex((prev) => (prev - 1 + slideCount) % slideCount)
+                      }
+                      aria-label="Previous venue photo"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
                     >
-                      {!hasFailed && venue.heroImageUrl ? (
-                        <Image
-                          src={venue.heroImageUrl}
-                          alt={venue.name}
-                          fill
-                          priority={idx === 0}
-                          sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 100vw, 25vw'}
-                          referrerPolicy="no-referrer"
-                          onError={() =>
-                            setFailedHeroIds((prev) => ({ ...prev, [venue.id]: true }))
-                          }
-                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                        />
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsSlideshowPaused((prev) => !prev)}
+                      aria-label={isSlideshowPaused ? 'Play venue slideshow' : 'Pause venue slideshow'}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
+                    >
+                      {isSlideshowPaused ? (
+                        <Play className="h-3.5 w-3.5" />
                       ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-brand-navy via-brand-navy-light to-brand-teal" />
+                        <Pause className="h-3.5 w-3.5" />
                       )}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-navy/85 via-brand-navy/35 to-transparent p-4 text-left">
-                        <p className="text-sm sm:text-base font-bold text-white leading-tight truncate">
-                          {venue.name}
-                        </p>
-                        <p className="text-xs text-surface-teal/90 truncate">{venue.area}</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSlideIndex((prev) => (prev + 1) % slideCount)}
+                      aria-label="Next venue photo"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </section>
 
-          {/* Animated Minimal Concierge Journey Strip */}
-          <div className="mx-auto mt-7 flex max-w-[680px] items-center justify-center gap-3 sm:gap-5 text-xs sm:text-sm font-semibold text-brand-navy/70">
+      {/* Animated Minimal Concierge Journey Strip */}
+      <div className="border-b border-brand-navy/8 bg-white/80">
+        <div className="mx-auto max-w-[1120px] px-4 sm:px-6 lg:px-8 py-4">
+          <div className="mx-auto flex max-w-[680px] items-center justify-center gap-3 sm:gap-5 text-xs sm:text-sm font-semibold text-brand-navy/75">
             <span className="whitespace-nowrap">Discover Venues</span>
             <div className="relative h-[2px] flex-1 dc-route-line" aria-hidden="true">
               <span className="dc-route-dot absolute -top-1 h-2.5 w-2.5 rounded-full bg-brand-teal" />
             </div>
             <span className="whitespace-nowrap text-brand-teal-text">Confirm Availability</span>
             <div className="relative hidden sm:block h-[2px] flex-1 dc-route-line" aria-hidden="true">
-              <span className="dc-route-dot absolute -top-1 h-2.5 w-2.5 rounded-full bg-brand-yellow" />
+              <span className="dc-route-dot absolute -top-1 h-2.5 w-2.5 rounded-full bg-brand-gold" />
             </div>
             <span className="hidden sm:inline whitespace-nowrap">Arrive &amp; Enjoy</span>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* 2. Curated Categories */}
       <section className="py-12 sm:py-16 lg:py-20">
