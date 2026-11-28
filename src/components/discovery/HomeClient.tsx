@@ -177,9 +177,9 @@ export function HomeClient() {
             )}
           </AnimatePresence>
 
-          {/* Measured Multi-Layer Navy Scrim for High WCAG AA+ Legibility Across All Venues */}
-          <div className="absolute inset-0 bg-brand-navy/50" />
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/75 via-brand-navy/45 to-brand-navy/90" />
+          {/* Lighter Measured Navy Scrim so Venue Photography Shines Through Clearly */}
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/52 via-brand-navy/30 to-brand-navy/70" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(18,59,96,0.34)_0%,transparent_72%)]" />
         </div>
 
         {/* Main Hero Foreground Content */}
@@ -188,9 +188,9 @@ export function HomeClient() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
-            className="mx-auto max-w-[880px]"
+            className="mx-auto max-w-[820px]"
           >
-            <h1 className="text-[clamp(2.45rem,6vw,4.85rem)] font-bold leading-[1.04] tracking-[-0.035em] text-white drop-shadow-[0_4px_24px_rgba(9,24,42,0.45)]">
+            <h1 className="text-[clamp(2rem,4.6vw,3.65rem)] font-bold leading-[1.08] tracking-[-0.03em] text-white drop-shadow-[0_4px_24px_rgba(9,24,42,0.6)]">
               <span className="block min-h-[1.12em] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -208,7 +208,7 @@ export function HomeClient() {
               <span className="block text-white">made effortless.</span>
             </h1>
 
-            <p className="mx-auto mt-6 mb-9 max-w-[580px] text-base sm:text-lg lg:text-[19px] leading-relaxed text-white/90 drop-shadow-[0_2px_12px_rgba(9,24,42,0.45)]">
+            <p className="mx-auto mt-4 mb-7 max-w-[540px] text-sm sm:text-base lg:text-[17px] leading-relaxed text-white/95 drop-shadow-[0_2px_14px_rgba(9,24,42,0.65)]">
               Discover curated restaurants, rooftop lounges, salsa nights, beach clubs, and event
               spaces across Lagos. Compare indicative{' '}
               <strong className="font-semibold text-white">Budget Ranges</strong> and let

@@ -147,7 +147,7 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Decompress. All rights reserved.</p>
 
           <p className="text-[11px] text-surface-teal/65 text-center sm:text-right leading-relaxed">
-            Built by Dreamily Tech Studio · Project Manager:{' '}
+            Built by Dreamily Tech Studio · Product Manager:{' '}
             <a
               href="https://www.linkedin.com/in/vivianonwuka?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
               target="_blank"
