@@ -840,7 +840,15 @@ export function DecompressProvider({ children }: { children: React.ReactNode }) 
         if (Array.isArray(local.venues) && local.venues.length > 0) {
           setVenues(upgradeLegacyVenueImages(local.venues));
         }
-        if (local.siteSettings) setSiteSettings(local.siteSettings);
+        if (local.siteSettings) {
+          setSiteSettings({
+            ...local.siteSettings,
+            supportPhone:
+              local.siteSettings.supportPhone === '+234 800 332 6677'
+                ? SEED_SITE_SETTINGS.supportPhone
+                : local.siteSettings.supportPhone,
+          });
+        }
       }
       opsHydratedRef.current = true;
 

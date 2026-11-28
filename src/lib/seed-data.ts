@@ -21,7 +21,7 @@ const VENUE_PHOTO_GLASSHOUSE_PAVILION = '/assets/images/venues/glasshouse-pavili
 // Default platform settings (editable via /admin -> Settings)
 export const SEED_SITE_SETTINGS: SiteSettings = {
   supportEmail: 'support@decompress.ng',
-  supportPhone: '+234 800 332 6677',
+  supportPhone: '+234 815 167 9375',
   supportHours: 'Monday – Saturday, 9:00 AM – 8:00 PM WAT',
   guestPaymentMode: 'guest_checkout',
   walletEnabled: true,

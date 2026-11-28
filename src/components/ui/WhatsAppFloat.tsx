@@ -1,26 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useDecompress } from '@/src/context/DecompressContext';
+
+const WHATSAPP_SUPPORT_NUMBER = '2348151679375'; // 0815 167 9375 (Nigeria +234)
 
 /**
  * Floating WhatsApp support button anchored to bottom-right corner.
- * Uses supportPhone from SiteSettings, formatted as WhatsApp Web/API link.
- * Includes accessibility labels and smooth hover transitions.
+ * Links directly to Decompress WhatsApp chat support (+234 815 167 9375).
  */
 export function WhatsAppFloat() {
-  const { siteSettings } = useDecompress();
-
-  if (!siteSettings?.supportPhone) {
-    return null;
-  }
-
-  // WhatsApp Web link format requires digits only: https://wa.me/<country_code><phone_number>
-  const cleanPhone = siteSettings.supportPhone.replace(/\D/g, '');
-  if (!cleanPhone) {
-    return null;
-  }
-  const whatsappUrl = `https://wa.me/${cleanPhone}`;
+  const whatsappUrl = `https://wa.me/${WHATSAPP_SUPPORT_NUMBER}`;
 
   return (
     <a
